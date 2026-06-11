@@ -22,7 +22,17 @@ namespace GuiRentalFutsal
 
         private void btnBooking_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Booking belum dibuat.");
+            // Membuat instance dari BookingForm
+            BookingForm formBooking = new BookingForm();
+
+            // Sembunyikan Form1 (Menu Utama) sementara
+            this.Hide();
+
+            // Buka form booking secara modal (harus ditutup dulu baru kode di bawahnya berjalan)
+            formBooking.ShowDialog();
+
+            // Setelah BookingForm ditutup (karena tombol kembali di-klik), Form1 muncul lagi
+            this.Show();
         }
 
         private void btnSchedule_Click(object sender, EventArgs e)
