@@ -1,3 +1,6 @@
+using System;
+using System.Windows.Forms;
+
 namespace GuiRentalFutsal
 {
     public partial class Form1 : Form
@@ -6,7 +9,6 @@ namespace GuiRentalFutsal
         {
             InitializeComponent();
         }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -25,7 +27,16 @@ namespace GuiRentalFutsal
 
         private void btnSchedule_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Cek Jadwal belum dibuat.");
+            ScheduleForm scheduleForm = new ScheduleForm();
+
+            // Dashboard disembunyikan sementara
+            this.Hide();
+
+            // Membuka form cek jadwal
+            scheduleForm.ShowDialog();
+
+            // Setelah ScheduleForm ditutup, dashboard muncul lagi
+            this.Show();
         }
 
         private void btnPayment_Click(object sender, EventArgs e)
@@ -36,13 +47,11 @@ namespace GuiRentalFutsal
         private void btnReport_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Form Laporan belum dibuat.");
-
         }
 
         private void btnExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
-
         }
     }
 }
