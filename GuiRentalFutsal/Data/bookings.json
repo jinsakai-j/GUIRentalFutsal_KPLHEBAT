@@ -1,0 +1,62 @@
+[
+  {
+    "Id": 1,
+    "FieldId": 1,
+    "CustomerName": "Andi Pratama",
+    "CustomerPhone": "081234567890",
+    "Date": "2025-06-15",
+    "StartTime": "10:00",
+    "DurationHours": 2,
+    "TotalPrice": 300000,
+    "Status": "Paid",
+    "EndTime": "12:00"
+  },
+  {
+    "Id": 2,
+    "FieldId": 2,
+    "CustomerName": "Budi Santoso",
+    "CustomerPhone": "082345678901",
+    "Date": "2025-06-15",
+    "StartTime": "14:00",
+    "DurationHours": 1,
+    "TotalPrice": 200000,
+    "Status": "Paid",
+    "EndTime": "15:00"
+  },
+  {
+    "Id": 3,
+    "FieldId": 1,
+    "CustomerName": "Charlie Wijaya",
+    "CustomerPhone": "083456789012",
+    "Date": "2025-06-16",
+    "StartTime": "18:00",
+    "DurationHours": 2,
+    "TotalPrice": 300000,
+    "Status": "Paid",
+    "EndTime": "20:00"
+  },
+  {
+    "Id": 4,
+    "FieldId": 3,
+    "CustomerName": "Dimas Saputra",
+    "CustomerPhone": "084567890123",
+    "Date": "2025-06-16",
+    "StartTime": "09:00",
+    "DurationHours": 3,
+    "TotalPrice": 525000,
+    "Status": "Cancelled",
+    "EndTime": "12:00"
+  },
+  {
+    "Id": 5,
+    "FieldId": 2,
+    "CustomerName": "Eko Ramadhan",
+    "CustomerPhone": "085678901234",
+    "Date": "2025-06-17",
+    "StartTime": "20:00",
+    "DurationHours": 2,
+    "TotalPrice": 400000,
+    "Status": "Completed",
+    "EndTime": "22:00"
+  }
+]
