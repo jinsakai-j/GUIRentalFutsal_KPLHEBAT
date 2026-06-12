@@ -41,12 +41,6 @@
             tJam = new TextBox();
             tDurasi = new TextBox();
             dataGridView1 = new DataGridView();
-            Id = new DataGridViewTextBoxColumn();
-            gPemesan = new DataGridViewTextBoxColumn();
-            gLapangan = new DataGridViewTextBoxColumn();
-            gJam = new DataGridViewTextBoxColumn();
-            gTotal = new DataGridViewTextBoxColumn();
-            gStatus = new DataGridViewTextBoxColumn();
             lHarga = new Label();
             lStatus = new Label();
             pilihTanggal = new DateTimePicker();
@@ -56,6 +50,14 @@
             keluar = new Button();
             cmbLapangan = new ComboBox();
             btnRefreshFields = new Button();
+            Id = new DataGridViewTextBoxColumn();
+            gPemesan = new DataGridViewTextBoxColumn();
+            gNoHp = new DataGridViewTextBoxColumn();
+            gLapangan = new DataGridViewTextBoxColumn();
+            gTanggal = new DataGridViewTextBoxColumn();
+            gJam = new DataGridViewTextBoxColumn();
+            gTotal = new DataGridViewTextBoxColumn();
+            gStatus = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -183,7 +185,7 @@
             dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Id, gPemesan, gLapangan, gJam, gTotal, gStatus });
+            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Id, gPemesan, gNoHp, gLapangan, gTanggal, gJam, gTotal, gStatus });
             dataGridView1.Location = new Point(18, 214);
             dataGridView1.Margin = new Padding(2);
             dataGridView1.Name = "dataGridView1";
@@ -192,48 +194,6 @@
             dataGridView1.Size = new Size(660, 184);
             dataGridView1.TabIndex = 16;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
-            // 
-            // Id
-            // 
-            Id.HeaderText = "Id";
-            Id.MinimumWidth = 8;
-            Id.Name = "Id";
-            Id.ReadOnly = true;
-            // 
-            // gPemesan
-            // 
-            gPemesan.HeaderText = "Pemesan";
-            gPemesan.MinimumWidth = 8;
-            gPemesan.Name = "gPemesan";
-            gPemesan.ReadOnly = true;
-            // 
-            // gLapangan
-            // 
-            gLapangan.HeaderText = "Lapangan";
-            gLapangan.MinimumWidth = 8;
-            gLapangan.Name = "gLapangan";
-            gLapangan.ReadOnly = true;
-            // 
-            // gJam
-            // 
-            gJam.HeaderText = "Jam";
-            gJam.MinimumWidth = 8;
-            gJam.Name = "gJam";
-            gJam.ReadOnly = true;
-            // 
-            // gTotal
-            // 
-            gTotal.HeaderText = "Total";
-            gTotal.MinimumWidth = 8;
-            gTotal.Name = "gTotal";
-            gTotal.ReadOnly = true;
-            // 
-            // gStatus
-            // 
-            gStatus.HeaderText = "status";
-            gStatus.MinimumWidth = 8;
-            gStatus.Name = "gStatus";
-            gStatus.ReadOnly = true;
             // 
             // lHarga
             // 
@@ -330,6 +290,60 @@
             btnRefreshFields.UseVisualStyleBackColor = true;
             btnRefreshFields.Click += btnRefreshFields_Click;
             // 
+            // Id
+            // 
+            Id.HeaderText = "Id";
+            Id.MinimumWidth = 8;
+            Id.Name = "Id";
+            Id.ReadOnly = true;
+            // 
+            // gPemesan
+            // 
+            gPemesan.HeaderText = "Pemesan";
+            gPemesan.MinimumWidth = 8;
+            gPemesan.Name = "gPemesan";
+            gPemesan.ReadOnly = true;
+            // 
+            // gNoHp
+            // 
+            gNoHp.HeaderText = "No. Hp";
+            gNoHp.Name = "gNoHp";
+            gNoHp.ReadOnly = true;
+            // 
+            // gLapangan
+            // 
+            gLapangan.HeaderText = "Lapangan";
+            gLapangan.MinimumWidth = 8;
+            gLapangan.Name = "gLapangan";
+            gLapangan.ReadOnly = true;
+            // 
+            // gTanggal
+            // 
+            gTanggal.HeaderText = "Tanggal";
+            gTanggal.Name = "gTanggal";
+            gTanggal.ReadOnly = true;
+            // 
+            // gJam
+            // 
+            gJam.HeaderText = "Jam";
+            gJam.MinimumWidth = 8;
+            gJam.Name = "gJam";
+            gJam.ReadOnly = true;
+            // 
+            // gTotal
+            // 
+            gTotal.HeaderText = "Total";
+            gTotal.MinimumWidth = 8;
+            gTotal.Name = "gTotal";
+            gTotal.ReadOnly = true;
+            // 
+            // gStatus
+            // 
+            gStatus.HeaderText = "status";
+            gStatus.MinimumWidth = 8;
+            gStatus.Name = "gStatus";
+            gStatus.ReadOnly = true;
+            // 
             // BookingForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -381,12 +395,6 @@
         private TextBox tJam;
         private TextBox tDurasi;
         private DataGridView dataGridView1;
-        private DataGridViewTextBoxColumn Id;
-        private DataGridViewTextBoxColumn gPemesan;
-        private DataGridViewTextBoxColumn gLapangan;
-        private DataGridViewTextBoxColumn gJam;
-        private DataGridViewTextBoxColumn gTotal;
-        private DataGridViewTextBoxColumn gStatus;
         private Label lHarga;
         private Label lStatus;
         private DateTimePicker pilihTanggal;
@@ -396,5 +404,13 @@
         private Button keluar;
         private ComboBox cmbLapangan;
         private Button btnRefreshFields;
+        private DataGridViewTextBoxColumn Id;
+        private DataGridViewTextBoxColumn gPemesan;
+        private DataGridViewTextBoxColumn gNoHp;
+        private DataGridViewTextBoxColumn gLapangan;
+        private DataGridViewTextBoxColumn gTanggal;
+        private DataGridViewTextBoxColumn gJam;
+        private DataGridViewTextBoxColumn gTotal;
+        private DataGridViewTextBoxColumn gStatus;
     }
 }
