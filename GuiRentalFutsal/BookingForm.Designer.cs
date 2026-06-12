@@ -61,9 +61,10 @@
             // Nama
             // 
             Nama.AutoSize = true;
-            Nama.Location = new Point(53, 38);
+            Nama.Location = new Point(37, 23);
+            Nama.Margin = new Padding(2, 0, 2, 0);
             Nama.Name = "Nama";
-            Nama.Size = new Size(134, 25);
+            Nama.Size = new Size(90, 15);
             Nama.TabIndex = 0;
             Nama.Text = "Nama Pemesan";
             Nama.Click += label1_Click;
@@ -71,45 +72,50 @@
             // NoHp
             // 
             NoHp.AutoSize = true;
-            NoHp.Location = new Point(53, 75);
+            NoHp.Location = new Point(37, 45);
+            NoHp.Margin = new Padding(2, 0, 2, 0);
             NoHp.Name = "NoHp";
-            NoHp.Size = new Size(62, 25);
+            NoHp.Size = new Size(40, 15);
             NoHp.TabIndex = 1;
             NoHp.Text = "No hp";
             // 
             // lapangan
             // 
             lapangan.AutoSize = true;
-            lapangan.Location = new Point(53, 117);
+            lapangan.Location = new Point(37, 70);
+            lapangan.Margin = new Padding(2, 0, 2, 0);
             lapangan.Name = "lapangan";
-            lapangan.Size = new Size(89, 25);
+            lapangan.Size = new Size(59, 15);
             lapangan.TabIndex = 2;
             lapangan.Text = "Lapangan";
             // 
             // tanggal
             // 
             tanggal.AutoSize = true;
-            tanggal.Location = new Point(53, 154);
+            tanggal.Location = new Point(37, 92);
+            tanggal.Margin = new Padding(2, 0, 2, 0);
             tanggal.Name = "tanggal";
-            tanggal.Size = new Size(73, 25);
+            tanggal.Size = new Size(49, 15);
             tanggal.TabIndex = 3;
             tanggal.Text = "Tanggal";
             // 
             // jam
             // 
             jam.AutoSize = true;
-            jam.Location = new Point(53, 191);
+            jam.Location = new Point(37, 115);
+            jam.Margin = new Padding(2, 0, 2, 0);
             jam.Name = "jam";
-            jam.Size = new Size(91, 25);
+            jam.Size = new Size(61, 15);
             jam.TabIndex = 4;
             jam.Text = "Jam mulai";
             // 
             // durasi
             // 
             durasi.AutoSize = true;
-            durasi.Location = new Point(53, 228);
+            durasi.Location = new Point(37, 137);
+            durasi.Margin = new Padding(2, 0, 2, 0);
             durasi.Name = "durasi";
-            durasi.Size = new Size(60, 25);
+            durasi.Size = new Size(39, 15);
             durasi.TabIndex = 5;
             durasi.Text = "durasi";
             durasi.Click += label6_Click;
@@ -117,50 +123,56 @@
             // harga
             // 
             harga.AutoSize = true;
-            harga.Location = new Point(49, 268);
+            harga.Location = new Point(34, 161);
+            harga.Margin = new Padding(2, 0, 2, 0);
             harga.Name = "harga";
-            harga.Size = new Size(99, 25);
+            harga.Size = new Size(66, 15);
             harga.TabIndex = 6;
             harga.Text = "Total harga";
             // 
             // status
             // 
             status.AutoSize = true;
-            status.Location = new Point(49, 302);
+            status.Location = new Point(34, 181);
+            status.Margin = new Padding(2, 0, 2, 0);
             status.Name = "status";
-            status.Size = new Size(103, 25);
+            status.Size = new Size(68, 15);
             status.TabIndex = 7;
             status.Text = "Status Awal";
             // 
             // tNama
             // 
-            tNama.Location = new Point(304, 38);
+            tNama.Location = new Point(213, 23);
+            tNama.Margin = new Padding(2, 2, 2, 2);
             tNama.Name = "tNama";
-            tNama.Size = new Size(150, 31);
+            tNama.Size = new Size(211, 23);
             tNama.TabIndex = 8;
             tNama.TextChanged += tNama_TextChanged;
             // 
             // tNoHp
             // 
-            tNoHp.Location = new Point(304, 75);
+            tNoHp.Location = new Point(213, 45);
+            tNoHp.Margin = new Padding(2, 2, 2, 2);
             tNoHp.Name = "tNoHp";
-            tNoHp.Size = new Size(150, 31);
+            tNoHp.Size = new Size(211, 23);
             tNoHp.TabIndex = 9;
             tNoHp.TextChanged += tNoHp_TextChanged;
             // 
             // tJam
             // 
-            tJam.Location = new Point(304, 191);
+            tJam.Location = new Point(213, 115);
+            tJam.Margin = new Padding(2, 2, 2, 2);
             tJam.Name = "tJam";
-            tJam.Size = new Size(150, 31);
+            tJam.Size = new Size(211, 23);
             tJam.TabIndex = 12;
             tJam.TextChanged += tJam_TextChanged;
             // 
             // tDurasi
             // 
-            tDurasi.Location = new Point(304, 228);
+            tDurasi.Location = new Point(213, 137);
+            tDurasi.Margin = new Padding(2, 2, 2, 2);
             tDurasi.Name = "tDurasi";
-            tDurasi.Size = new Size(150, 31);
+            tDurasi.Size = new Size(211, 23);
             tDurasi.TabIndex = 13;
             tDurasi.TextChanged += tDurasi_TextChanged;
             // 
@@ -171,11 +183,12 @@
             dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Id, gPemesan, gLapangan, gJam, gTotal, gStatus });
-            dataGridView1.Location = new Point(26, 356);
+            dataGridView1.Location = new Point(18, 214);
+            dataGridView1.Margin = new Padding(2, 2, 2, 2);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersWidth = 62;
-            dataGridView1.Size = new Size(943, 306);
+            dataGridView1.Size = new Size(660, 184);
             dataGridView1.TabIndex = 16;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
@@ -224,9 +237,10 @@
             // lHarga
             // 
             lHarga.AutoSize = true;
-            lHarga.Location = new Point(304, 268);
+            lHarga.Location = new Point(213, 161);
+            lHarga.Margin = new Padding(2, 0, 2, 0);
             lHarga.Name = "lHarga";
-            lHarga.Size = new Size(59, 25);
+            lHarga.Size = new Size(38, 15);
             lHarga.TabIndex = 17;
             lHarga.Text = "label1";
             lHarga.Click += lHarga_Click;
@@ -234,26 +248,29 @@
             // lStatus
             // 
             lStatus.AutoSize = true;
-            lStatus.Location = new Point(304, 302);
+            lStatus.Location = new Point(213, 181);
+            lStatus.Margin = new Padding(2, 0, 2, 0);
             lStatus.Name = "lStatus";
-            lStatus.Size = new Size(59, 25);
+            lStatus.Size = new Size(38, 15);
             lStatus.TabIndex = 18;
             lStatus.Text = "label2";
             lStatus.Click += lStatus_Click;
             // 
             // pilihTanggal
             // 
-            pilihTanggal.Location = new Point(304, 154);
+            pilihTanggal.Location = new Point(213, 92);
+            pilihTanggal.Margin = new Padding(2, 2, 2, 2);
             pilihTanggal.Name = "pilihTanggal";
-            pilihTanggal.Size = new Size(300, 31);
+            pilihTanggal.Size = new Size(211, 23);
             pilihTanggal.TabIndex = 19;
             pilihTanggal.ValueChanged += pilihTanggal_ValueChanged;
             // 
             // cekJadwal
             // 
-            cekJadwal.Location = new Point(758, 50);
+            cekJadwal.Location = new Point(531, 30);
+            cekJadwal.Margin = new Padding(2, 2, 2, 2);
             cekJadwal.Name = "cekJadwal";
-            cekJadwal.Size = new Size(112, 34);
+            cekJadwal.Size = new Size(78, 20);
             cekJadwal.TabIndex = 20;
             cekJadwal.Text = "Cek Jadwal";
             cekJadwal.UseVisualStyleBackColor = true;
@@ -261,9 +278,10 @@
             // 
             // buatBooking
             // 
-            buatBooking.Location = new Point(758, 117);
+            buatBooking.Location = new Point(531, 70);
+            buatBooking.Margin = new Padding(2, 2, 2, 2);
             buatBooking.Name = "buatBooking";
-            buatBooking.Size = new Size(128, 34);
+            buatBooking.Size = new Size(90, 20);
             buatBooking.TabIndex = 21;
             buatBooking.Text = "Buat Booking";
             buatBooking.UseVisualStyleBackColor = true;
@@ -271,9 +289,10 @@
             // 
             // reset
             // 
-            reset.Location = new Point(758, 186);
+            reset.Location = new Point(531, 112);
+            reset.Margin = new Padding(2, 2, 2, 2);
             reset.Name = "reset";
-            reset.Size = new Size(112, 34);
+            reset.Size = new Size(78, 20);
             reset.TabIndex = 22;
             reset.Text = "Reset";
             reset.UseVisualStyleBackColor = true;
@@ -281,9 +300,10 @@
             // 
             // keluar
             // 
-            keluar.Location = new Point(758, 249);
+            keluar.Location = new Point(531, 149);
+            keluar.Margin = new Padding(2, 2, 2, 2);
             keluar.Name = "keluar";
-            keluar.Size = new Size(112, 34);
+            keluar.Size = new Size(78, 20);
             keluar.TabIndex = 23;
             keluar.Text = "Kembali";
             keluar.UseVisualStyleBackColor = true;
@@ -292,17 +312,18 @@
             // cmbLapangan
             // 
             cmbLapangan.FormattingEnabled = true;
-            cmbLapangan.Location = new Point(304, 115);
+            cmbLapangan.Location = new Point(213, 69);
+            cmbLapangan.Margin = new Padding(2, 2, 2, 2);
             cmbLapangan.Name = "cmbLapangan";
-            cmbLapangan.Size = new Size(182, 33);
+            cmbLapangan.Size = new Size(211, 23);
             cmbLapangan.TabIndex = 24;
             cmbLapangan.SelectedIndexChanged += cmbLapangan_SelectedIndexChanged;
             // 
             // BookingForm
             // 
-            AutoScaleDimensions = new SizeF(10F, 25F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(998, 699);
+            ClientSize = new Size(699, 419);
             Controls.Add(cmbLapangan);
             Controls.Add(keluar);
             Controls.Add(reset);
@@ -324,6 +345,7 @@
             Controls.Add(lapangan);
             Controls.Add(NoHp);
             Controls.Add(Nama);
+            Margin = new Padding(2, 2, 2, 2);
             Name = "BookingForm";
             Text = "BookingForm";
             Load += BookingForm_Load;
