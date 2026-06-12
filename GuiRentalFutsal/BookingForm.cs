@@ -22,6 +22,58 @@ namespace GuiRentalFutsal
         {
             InitializeComponent();
             SetupBookingGrid();
+            SetupTimeComboBoxes();
+        }
+
+        private void SetupTimeComboBoxes()
+        {
+            cmbJamMulai.Items.Clear();
+
+            for (int hour = 8; hour <= 22; hour++)
+            {
+                cmbJamMulai.Items.Add($"{hour:00}:00");
+            }
+
+            if (cmbJamMulai.Items.Count > 0)
+            {
+                cmbJamMulai.SelectedIndex = 0;
+            }
+
+            cmbDurasi.Items.Clear();
+
+            for (int duration = 1; duration <= 6; duration++)
+            {
+                cmbDurasi.Items.Add($"{duration} Jam");
+            }
+
+            cmbDurasi.Items.Add("Full Day");
+
+            if (cmbDurasi.Items.Count > 0)
+            {
+                cmbDurasi.SelectedIndex = 0;
+            }
+
+            cmbJamMulai.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDurasi.DropDownStyle = ComboBoxStyle.DropDownList;
+        }
+
+        private int GetSelectedDurationHours()
+        {
+            string selectedDuration = cmbDurasi.Text.Trim();
+
+            if (selectedDuration.Equals("Full Day", StringComparison.OrdinalIgnoreCase))
+            {
+                return 15;
+            }
+
+            string numberOnly = selectedDuration.Replace("Jam", "").Trim();
+
+            if (int.TryParse(numberOnly, out int durationHours))
+            {
+                return durationHours;
+            }
+
+            return 0;
         }
 
         private void SetupBookingGrid()
@@ -44,6 +96,8 @@ namespace GuiRentalFutsal
 
         private void BookingForm_Load(object sender, EventArgs e)
         {
+            pilihTanggal.MinDate = DateTime.Today;
+            pilihTanggal.Value = DateTime.Today;
 
             lHarga.Text = "0";
             lStatus.Text = "Tersedia";
@@ -55,24 +109,26 @@ namespace GuiRentalFutsal
         private void buatBooking_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(tNama.Text) ||
-         string.IsNullOrWhiteSpace(tNoHp.Text) ||
-         cmbLapangan.SelectedValue == null ||
-         string.IsNullOrWhiteSpace(tJam.Text) ||
-         string.IsNullOrWhiteSpace(tDurasi.Text))
+        string.IsNullOrWhiteSpace(tNoHp.Text) ||
+        cmbLapangan.SelectedValue == null ||
+        cmbJamMulai.SelectedItem == null ||
+        cmbDurasi.SelectedItem == null)
             {
                 MessageBox.Show("Mohon lengkapi semua data form!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (!TimeOnly.TryParse(tJam.Text.Trim(), out TimeOnly startTime))
+            if (!TimeOnly.TryParse(cmbJamMulai.Text, out TimeOnly startTime))
             {
-                MessageBox.Show("Format jam harus benar. Contoh: 18:00", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Format jam tidak valid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (!int.TryParse(tDurasi.Text.Trim(), out int durationHours) || durationHours <= 0)
+            int durationHours = GetSelectedDurationHours();
+
+            if (durationHours <= 0)
             {
-                MessageBox.Show("Durasi harus berupa angka positif.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Durasi tidak valid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -102,60 +158,85 @@ namespace GuiRentalFutsal
 
         private void cekJadwal_Click(object sender, EventArgs e)
         {
-            // Ganti tLapangan dengan cmbLapangan
-            if (cmbLapangan.SelectedItem == null || string.IsNullOrWhiteSpace(tJam.Text))
+            if (cmbLapangan.SelectedValue == null ||
+            cmbJamMulai.SelectedItem == null ||
+            cmbDurasi.SelectedItem == null)
             {
-                MessageBox.Show("Pilih Lapangan dan isi Jam Mulai terlebih dahulu untuk mengecek jadwal.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Pilih lapangan, jam mulai, dan durasi terlebih dahulu.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            // Logika pencarian sederhana di memori apakah jadwal sudah ada yang booking
-            string jamDicek = pilihTanggal.Value.ToString("dd/MM/yyyy") + " - " + tJam.Text;
-            string lapanganTerpilih = cmbLapangan.Text;
-            bool isBentrok = false;
-
-            foreach (DataRow row in tableData.Rows)
+            if (!TimeOnly.TryParse(cmbJamMulai.Text, out TimeOnly startTime))
             {
-                // Cek jika lapangan dan waktu sama
-                if (row["Lapangan"].ToString() == lapanganTerpilih && row["Jam"].ToString() == jamDicek)
-                {
-                    isBentrok = true;
-                    break;
-                }
+                MessageBox.Show("Format jam tidak valid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            if (isBentrok)
+            int durationHours = GetSelectedDurationHours();
+
+            if (durationHours <= 0)
             {
-                MessageBox.Show("Jadwal sudah terisi! Silakan pilih jam atau lapangan lain.", "Jadwal Penuh", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                lStatus.Text = "Penuh";
+                MessageBox.Show("Durasi tidak valid.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
+
+            int fieldId = (int)cmbLapangan.SelectedValue;
+            DateOnly bookingDate = DateOnly.FromDateTime(pilihTanggal.Value.Date);
+
+            var field = AppServices.FieldService.GetById(fieldId);
+
+            if (field is null)
             {
-                MessageBox.Show("Jadwal tersedia!", "Tersedia", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                lStatus.Text = "Tersedia";
+                MessageBox.Show("Data lapangan tidak ditemukan.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+
+            decimal totalHarga = field.PricePerHour * durationHours;
+            lHarga.Text = "Rp " + totalHarga.ToString("N0");
+
+            var result = AppServices.ScheduleService.IsAvailable(
+                fieldId,
+                bookingDate,
+                startTime,
+                durationHours
+            );
+
+            MessageBox.Show(result.Message);
+
+            lStatus.Text = result.Success && result.Data ? "Tersedia" : "Penuh";
         }
 
         private void reset_Click(object sender, EventArgs e)
         {
             BersihkanForm();
+            LoadFieldsToComboBox();
+            LoadBookings();
         }
 
         // Method kustom untuk mereset seluruh input
         private void BersihkanForm()
         {
             tNama.Clear();
-            tNoHp.Clear(); // Jika Anda masih memakai textbox ini
+            tNoHp.Clear();
 
-            // Reset ComboBox ke pilihan pertama alih-alih di-.Clear()
             if (cmbLapangan.DataSource != null && cmbLapangan.Items.Count > 0)
             {
                 cmbLapangan.SelectedIndex = 0;
             }
 
-            tJam.Clear();
-            tDurasi.Clear();
-            pilihTanggal.Value = DateTime.Now; // Reset kalender ke hari ini
+            if (cmbJamMulai.Items.Count > 0)
+            {
+                cmbJamMulai.SelectedIndex = 0;
+            }
+
+            if (cmbDurasi.Items.Count > 0)
+            {
+                cmbDurasi.SelectedIndex = 0;
+            }
+
+            cmbJamMulai.Enabled = true;
+
+            pilihTanggal.Value = DateTime.Today;
             lHarga.Text = "0";
             lStatus.Text = "Tersedia";
         }
@@ -221,6 +302,20 @@ namespace GuiRentalFutsal
         private void btnRefreshFields_Click(object sender, EventArgs e)
         {
             LoadFieldsToComboBox();
+            LoadBookings();
+        }
+
+        private void cmbDurasi_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbDurasi.Text.Equals("Full Day", StringComparison.OrdinalIgnoreCase))
+            {
+                cmbJamMulai.SelectedItem = "08:00";
+                cmbJamMulai.Enabled = false;
+            }
+            else
+            {
+                cmbJamMulai.Enabled = true;
+            }
         }
     }
 }
