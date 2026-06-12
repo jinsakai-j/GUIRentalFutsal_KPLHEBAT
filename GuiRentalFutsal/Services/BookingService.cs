@@ -39,7 +39,10 @@ namespace GuiRentalFutsal.Services
             if (field is null) return OperationResult<Booking>.Fail("Lapangan tidak ditemukan atau tidak aktif.");
             if (string.IsNullOrWhiteSpace(customerName)) return OperationResult<Booking>.Fail("Nama tidak boleh kosong.");
             if (string.IsNullOrWhiteSpace(customerPhone)) return OperationResult<Booking>.Fail("Nomor HP tidak boleh kosong.");
-            if (durationHours <= 0 || durationHours > 6) return OperationResult<Booking>.Fail("Durasi harus 1-6 jam.");
+            if (durationHours <= 0 || durationHours > 15)
+            {
+                return OperationResult<Booking>.Fail("Durasi harus 1-15 jam.");
+            }
             if (startTime.Minute != 0) return OperationResult<Booking>.Fail("Jam mulai harus tepat (contoh 18:00).");
 
             TimeSpan start = startTime.ToTimeSpan();
