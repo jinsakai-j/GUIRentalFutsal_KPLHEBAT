@@ -55,6 +55,7 @@
             reset = new Button();
             keluar = new Button();
             cmbLapangan = new ComboBox();
+            btnRefreshFields = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -143,7 +144,7 @@
             // tNama
             // 
             tNama.Location = new Point(213, 23);
-            tNama.Margin = new Padding(2, 2, 2, 2);
+            tNama.Margin = new Padding(2);
             tNama.Name = "tNama";
             tNama.Size = new Size(211, 23);
             tNama.TabIndex = 8;
@@ -152,7 +153,7 @@
             // tNoHp
             // 
             tNoHp.Location = new Point(213, 45);
-            tNoHp.Margin = new Padding(2, 2, 2, 2);
+            tNoHp.Margin = new Padding(2);
             tNoHp.Name = "tNoHp";
             tNoHp.Size = new Size(211, 23);
             tNoHp.TabIndex = 9;
@@ -161,7 +162,7 @@
             // tJam
             // 
             tJam.Location = new Point(213, 115);
-            tJam.Margin = new Padding(2, 2, 2, 2);
+            tJam.Margin = new Padding(2);
             tJam.Name = "tJam";
             tJam.Size = new Size(211, 23);
             tJam.TabIndex = 12;
@@ -170,7 +171,7 @@
             // tDurasi
             // 
             tDurasi.Location = new Point(213, 137);
-            tDurasi.Margin = new Padding(2, 2, 2, 2);
+            tDurasi.Margin = new Padding(2);
             tDurasi.Name = "tDurasi";
             tDurasi.Size = new Size(211, 23);
             tDurasi.TabIndex = 13;
@@ -184,7 +185,7 @@
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Id, gPemesan, gLapangan, gJam, gTotal, gStatus });
             dataGridView1.Location = new Point(18, 214);
-            dataGridView1.Margin = new Padding(2, 2, 2, 2);
+            dataGridView1.Margin = new Padding(2);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersWidth = 62;
@@ -259,7 +260,7 @@
             // pilihTanggal
             // 
             pilihTanggal.Location = new Point(213, 92);
-            pilihTanggal.Margin = new Padding(2, 2, 2, 2);
+            pilihTanggal.Margin = new Padding(2);
             pilihTanggal.Name = "pilihTanggal";
             pilihTanggal.Size = new Size(211, 23);
             pilihTanggal.TabIndex = 19;
@@ -268,7 +269,7 @@
             // cekJadwal
             // 
             cekJadwal.Location = new Point(531, 30);
-            cekJadwal.Margin = new Padding(2, 2, 2, 2);
+            cekJadwal.Margin = new Padding(2);
             cekJadwal.Name = "cekJadwal";
             cekJadwal.Size = new Size(78, 20);
             cekJadwal.TabIndex = 20;
@@ -279,7 +280,7 @@
             // buatBooking
             // 
             buatBooking.Location = new Point(531, 70);
-            buatBooking.Margin = new Padding(2, 2, 2, 2);
+            buatBooking.Margin = new Padding(2);
             buatBooking.Name = "buatBooking";
             buatBooking.Size = new Size(90, 20);
             buatBooking.TabIndex = 21;
@@ -290,7 +291,7 @@
             // reset
             // 
             reset.Location = new Point(531, 112);
-            reset.Margin = new Padding(2, 2, 2, 2);
+            reset.Margin = new Padding(2);
             reset.Name = "reset";
             reset.Size = new Size(78, 20);
             reset.TabIndex = 22;
@@ -301,7 +302,7 @@
             // keluar
             // 
             keluar.Location = new Point(531, 149);
-            keluar.Margin = new Padding(2, 2, 2, 2);
+            keluar.Margin = new Padding(2);
             keluar.Name = "keluar";
             keluar.Size = new Size(78, 20);
             keluar.TabIndex = 23;
@@ -313,17 +314,28 @@
             // 
             cmbLapangan.FormattingEnabled = true;
             cmbLapangan.Location = new Point(213, 69);
-            cmbLapangan.Margin = new Padding(2, 2, 2, 2);
+            cmbLapangan.Margin = new Padding(2);
             cmbLapangan.Name = "cmbLapangan";
             cmbLapangan.Size = new Size(211, 23);
             cmbLapangan.TabIndex = 24;
             cmbLapangan.SelectedIndexChanged += cmbLapangan_SelectedIndexChanged;
+            // 
+            // btnRefreshFields
+            // 
+            btnRefreshFields.Location = new Point(515, 181);
+            btnRefreshFields.Name = "btnRefreshFields";
+            btnRefreshFields.Size = new Size(117, 23);
+            btnRefreshFields.TabIndex = 25;
+            btnRefreshFields.Text = "Refresh Lapangan";
+            btnRefreshFields.UseVisualStyleBackColor = true;
+            btnRefreshFields.Click += btnRefreshFields_Click;
             // 
             // BookingForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(699, 419);
+            Controls.Add(btnRefreshFields);
             Controls.Add(cmbLapangan);
             Controls.Add(keluar);
             Controls.Add(reset);
@@ -345,7 +357,7 @@
             Controls.Add(lapangan);
             Controls.Add(NoHp);
             Controls.Add(Nama);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             Name = "BookingForm";
             Text = "BookingForm";
             Load += BookingForm_Load;
@@ -383,5 +395,6 @@
         private Button reset;
         private Button keluar;
         private ComboBox cmbLapangan;
+        private Button btnRefreshFields;
     }
 }
