@@ -17,7 +17,17 @@ namespace GuiRentalFutsal
 
         private void btnField_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Kelola Lapangan belum dibuat.");
+            // Membuat instance dari FieldForm
+            FieldForm formField = new FieldForm();
+
+            // Sembunyikan Form1 (Menu Utama) sementara
+            this.Hide();
+
+            // Buka FieldForm secara modal
+            formField.ShowDialog();
+
+            // Setelah FieldForm ditutup melalui tombol kembali, Form1 muncul lagi
+            this.Show();
         }
 
         private void btnBooking_Click(object sender, EventArgs e)
