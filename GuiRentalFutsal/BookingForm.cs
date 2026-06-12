@@ -42,21 +42,7 @@ namespace GuiRentalFutsal
             lHarga.Text = "0";
             lStatus.Text = "Tersedia";
 
-            // --- TAMBAHAN KODE COMBOBOX ---
-            // Masukkan data lapangan yang sama persis dengan ScheduleForm
-            cmbLapangan.Items.Clear();
-            cmbLapangan.Items.Add("Lapangan A Vinyl");
-            cmbLapangan.Items.Add("Lapangan B Sintetis");
-            cmbLapangan.Items.Add("Lapangan C Rumput");
-
-            // Atur agar user tidak bisa mengetik manual, hanya bisa memilih
-            cmbLapangan.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            // Pilih lapangan pertama sebagai default saat form dibuka
-            if (cmbLapangan.Items.Count > 0)
-            {
-                cmbLapangan.SelectedIndex = 0;
-            }
+            LoadFieldsToComboBox();
         }
 
         private void buatBooking_Click(object sender, EventArgs e)
@@ -87,8 +73,7 @@ namespace GuiRentalFutsal
             string jamBooking = pilihTanggal.Value.ToString("dd/MM/yyyy") + " - " + tJam.Text;
 
             // Ambil teks dari ComboBox
-            string lapanganTerpilih = cmbLapangan.SelectedItem.ToString();
-
+            string lapanganTerpilih = cmbLapangan.Text;
             // 4. Masukkan data ke DataGridView melalui DataTable
             tableData.Rows.Add(idCounter, tNama.Text, lapanganTerpilih, jamBooking, totalHarga, lStatus.Text);
             idCounter++;
@@ -110,7 +95,7 @@ namespace GuiRentalFutsal
 
             // Logika pencarian sederhana di memori apakah jadwal sudah ada yang booking
             string jamDicek = pilihTanggal.Value.ToString("dd/MM/yyyy") + " - " + tJam.Text;
-            string lapanganTerpilih = cmbLapangan.SelectedItem.ToString();
+            string lapanganTerpilih = cmbLapangan.Text;
             bool isBentrok = false;
 
             foreach (DataRow row in tableData.Rows)
@@ -147,7 +132,7 @@ namespace GuiRentalFutsal
             tNoHp.Clear(); // Jika Anda masih memakai textbox ini
 
             // Reset ComboBox ke pilihan pertama alih-alih di-.Clear()
-            if (cmbLapangan.Items.Count > 0)
+            if (cmbLapangan.DataSource != null && cmbLapangan.Items.Count > 0)
             {
                 cmbLapangan.SelectedIndex = 0;
             }
@@ -179,6 +164,27 @@ namespace GuiRentalFutsal
         private void cmbLapangan_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Event ini otomatis dibuat, biarkan kosong jika belum ada logika khusus saat user mengganti pilihan lapangan
+        }
+
+        private void LoadFieldsToComboBox()
+        {
+            var fields = AppServices.FieldService.GetActiveFields();
+
+            cmbLapangan.DataSource = null;
+            cmbLapangan.DisplayMember = "Name";
+            cmbLapangan.ValueMember = "Id";
+            cmbLapangan.DataSource = fields;
+            cmbLapangan.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            if (fields.Count > 0)
+            {
+                cmbLapangan.SelectedIndex = 0;
+            }
+        }
+
+        private void btnRefreshFields_Click(object sender, EventArgs e)
+        {
+            LoadFieldsToComboBox();
         }
     }
 }

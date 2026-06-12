@@ -18,7 +18,39 @@ namespace GuiRentalFutsal
         public FieldForm()
         {
             InitializeComponent();
-            InisialisasiTabel();
+            SetupGrid();
+        }
+
+        private void SetupGrid()
+        {
+            GridView_Lapangan.AutoGenerateColumns = false;
+
+            if (GridView_Lapangan.Columns.Count >= 4)
+            {
+                GridView_Lapangan.Columns[0].DataPropertyName = "Id";
+                GridView_Lapangan.Columns[1].DataPropertyName = "Name";
+                GridView_Lapangan.Columns[2].DataPropertyName = "PricePerHour";
+                GridView_Lapangan.Columns[3].DataPropertyName = "IsActive";
+            }
+
+            GridView_Lapangan.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            GridView_Lapangan.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            GridView_Lapangan.MultiSelect = false;
+            GridView_Lapangan.AllowUserToAddRows = false;
+            GridView_Lapangan.ReadOnly = true;
+
+            cmbBox_Status.Items.Clear();
+            cmbBox_Status.Items.Add("Ya");
+            cmbBox_Status.Items.Add("Tidak");
+            cmbBox_Status.SelectedIndex = 0;
+        }
+
+        private void LoadFields()
+        {
+            var fields = AppServices.FieldService.GetAllFields();
+
+            GridView_Lapangan.DataSource = null;
+            GridView_Lapangan.DataSource = fields;
         }
 
         // Fungsi untuk mengatur kolom tabel dan pilihan ComboBox Status saat form pertama kali dimuat
@@ -60,7 +92,7 @@ namespace GuiRentalFutsal
 
         private void FieldForm_Load(object sender, EventArgs e)
         {
-            // Bisa dikosongkan karena inisialisasi sudah dilakukan di Constructor
+            LoadFields();
         }
 
         private void Txt_IDLapangan_TextChanged(object sender, EventArgs e)
@@ -82,200 +114,96 @@ namespace GuiRentalFutsal
         // ==================== [ TOMBOL TAMBAH ] ====================
         private void bttn_Tambah_Click(object sender, EventArgs e)
         {
-            string idInput = Txt_IDLapangan.Text.Trim();
             string namaInput = Txt_NamaLapangan.Text.Trim();
             string hargaInput = Txt_HargaPerJam.Text.Trim();
 
-            // 1. Validasi isi field tidak boleh kosong
-            if (string.IsNullOrWhiteSpace(idInput) || string.IsNullOrWhiteSpace(namaInput) || string.IsNullOrWhiteSpace(hargaInput))
+            if (string.IsNullOrWhiteSpace(namaInput) || string.IsNullOrWhiteSpace(hargaInput))
             {
-                MessageBox.Show("Semua data field harus diisi terlebih dahulu!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Nama lapangan dan harga per jam wajib diisi.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // 2. VALIDASI: ID Lapangan harus berupa angka dan tidak boleh negatif atau nol
-            if (!int.TryParse(idInput, out int idValid) || idValid <= 0)
+            if (!decimal.TryParse(hargaInput, out decimal harga) || harga <= 0)
             {
-                MessageBox.Show("ID Lapangan harus berupa angka bulat positif (tidak boleh negatif atau nol)!", "Kesalahan Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Harga per jam harus berupa angka positif.", "Kesalahan Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // 3. VALIDASI: Harga/Jam harus berupa angka dan tidak boleh negatif atau nol
-            if (!int.TryParse(hargaInput, out int hargaValid) || hargaValid <= 0)
+            var result = AppServices.FieldService.AddField(namaInput, harga);
+
+            MessageBox.Show(result.Message);
+
+            if (result.Success)
             {
-                MessageBox.Show("Harga per Jam harus berupa angka positif (tidak boleh negatif atau nol)!", "Kesalahan Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                LoadFields();
+                BereskanInput();
             }
-
-            // 4. VALIDASI: Pengecekan duplikasi ID dan Nama Lapangan
-            foreach (DataRow row in dataLapangan.Rows)
-            {
-                if (row["ID"].ToString() == idInput)
-                {
-                    MessageBox.Show("ID Lapangan sudah terdaftar. Gunakan ID lain!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                if (row["Nama Lapangan"].ToString().Trim().ToLower() == namaInput.ToLower())
-                {
-                    MessageBox.Show($"Nama lapangan '{namaInput}' sudah ada! Gunakan nama lapangan yang berbeda.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
-
-            // 5. Tambah data baru ke tabel
-            string status = cmbBox_Status.SelectedItem?.ToString() ?? "Ya";
-            dataLapangan.Rows.Add(idInput, namaInput, hargaValid, status);
-
-            MessageBox.Show("Data lapangan berhasil ditambahkan!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            BereskanInput();
         }
 
         // ==================== [ TOMBOL UPDATE ] ====================
         private void bttn_Update_Click(object sender, EventArgs e)
         {
-            string targetID = Txt_IDLapangan.Text.Trim();
+            if (!int.TryParse(Txt_IDLapangan.Text.Trim(), out int id) || id <= 0)
+            {
+                MessageBox.Show("Pilih data lapangan yang ingin diperbarui.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             string namaInput = Txt_NamaLapangan.Text.Trim();
             string hargaInput = Txt_HargaPerJam.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(targetID))
+            if (string.IsNullOrWhiteSpace(namaInput) || string.IsNullOrWhiteSpace(hargaInput))
             {
-                MessageBox.Show("Silahkan pilih baris pada tabel atau masukkan ID Lapangan terlebih dahulu!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Nama lapangan dan harga per jam wajib diisi.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // 1. VALIDASI: ID Lapangan harus berupa angka positif
-            if (!int.TryParse(targetID, out int idValid) || idValid <= 0)
+            if (!decimal.TryParse(hargaInput, out decimal harga) || harga <= 0)
             {
-                MessageBox.Show("ID Lapangan harus berupa angka bulat positif!", "Kesalahan Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Harga per jam harus berupa angka positif.", "Kesalahan Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // 2. Cari baris data yang memiliki ID tersebut
-            DataRow rowTerpilih = null;
-            foreach (DataRow row in dataLapangan.Rows)
-            {
-                if (row["ID"].ToString() == targetID)
-                {
-                    rowTerpilih = row;
-                    break;
-                }
-            }
+            bool isActive = cmbBox_Status.SelectedItem?.ToString() == "Ya";
 
-            if (rowTerpilih == null)
-            {
-                MessageBox.Show($"Data dengan ID Lapangan '{targetID}' tidak ditemukan!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            var result = AppServices.FieldService.UpdateField(id, namaInput, harga, isActive);
 
-            // 3. VALIDASI: Cek duplikasi nama dengan ID lain
-            if (!string.IsNullOrWhiteSpace(namaInput))
-            {
-                foreach (DataRow row in dataLapangan.Rows)
-                {
-                    if (row["ID"].ToString() != targetID && row["Nama Lapangan"].ToString().Trim().ToLower() == namaInput.ToLower())
-                    {
-                        MessageBox.Show($"Nama lapangan '{namaInput}' sudah digunakan oleh ID Lapangan {row["ID"]}! Gunakan nama lain.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                }
-            }
+            MessageBox.Show(result.Message);
 
-            // 4. VALIDASI: Jika Harga/Jam diisi, pastikan nilainya positif dan bukan negatif
-            int hargaValid = 0;
-            if (!string.IsNullOrWhiteSpace(hargaInput))
+            if (result.Success)
             {
-                if (!int.TryParse(hargaInput, out hargaValid) || hargaValid <= 0)
-                {
-                    MessageBox.Show("Harga per Jam harus berupa angka positif (tidak boleh negatif atau nol)!", "Kesalahan Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-
-            // 5. Proses Eksekusi Update
-            bool adaPerubahan = false;
-
-            if (!string.IsNullOrWhiteSpace(namaInput))
-            {
-                rowTerpilih["Nama Lapangan"] = namaInput;
-                adaPerubahan = true;
-            }
-
-            if (!string.IsNullOrWhiteSpace(hargaInput))
-            {
-                rowTerpilih["Harga/Jam"] = hargaValid;
-                adaPerubahan = true;
-            }
-
-            if (cmbBox_Status.SelectedItem != null)
-            {
-                rowTerpilih["Aktif"] = cmbBox_Status.SelectedItem.ToString();
-                adaPerubahan = true;
-            }
-
-            if (adaPerubahan)
-            {
-                MessageBox.Show("Data lapangan berhasil diperbarui!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                LoadFields();
                 BereskanInput();
-            }
-            else
-            {
-                MessageBox.Show("Tidak ada data baru yang diubah.", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
         // ==================== [ TOMBOL HAPUS ] ====================
         private void bttn_Hapus_Click(object sender, EventArgs e)
         {
-            string targetID = Txt_IDLapangan.Text.Trim();
-            DataRow rowTerpilih = null;
-            int indeksTerpilih = -1;
-
-            // 1. CARA PERTAMA: Cek berdasarkan baris yang sedang diklik/dipilih di tabel UI
-            if (GridView_Lapangan.SelectedRows.Count > 0)
+            if (!int.TryParse(Txt_IDLapangan.Text.Trim(), out int id) || id <= 0)
             {
-                indeksTerpilih = GridView_Lapangan.SelectedRows[0].Index;
-                rowTerpilih = dataLapangan.Rows[indeksTerpilih];
-            }
-            // 2. CARA KEDUA: Jika tidak ada baris yang diklik, cek berdasarkan ID yang diketik di TextBox
-            else if (!string.IsNullOrWhiteSpace(targetID))
-            {
-                for (int i = 0; i < dataLapangan.Rows.Count; i++)
-                {
-                    if (dataLapangan.Rows[i]["ID"].ToString() == targetID)
-                    {
-                        rowTerpilih = dataLapangan.Rows[i];
-                        indeksTerpilih = i;
-                        break;
-                    }
-                }
-            }
-
-            // 3. Validasi jika data tidak ditemukan dari kedua cara di atas
-            if (rowTerpilih == null || indeksTerpilih == -1)
-            {
-                MessageBox.Show("Silahkan pilih baris data pada tabel atau masukkan ID Lapangan valid yang ingin dihapus!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Pilih data lapangan yang ingin dihapus.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // 4. Konfirmasi keamanan sebelum benar-benar menghapus data lapangan
-            string namaLapangan = rowTerpilih["Nama Lapangan"].ToString();
-            string idLapangan = rowTerpilih["ID"].ToString();
-
-            DialogResult konfirmasi = MessageBox.Show(
-                $"Apakah Anda yakin ingin menghapus data lapangan berikut?\n\nID: {idLapangan}\nNama: {namaLapangan}",
+            DialogResult confirm = MessageBox.Show(
+                "Apakah Anda yakin ingin menghapus lapangan ini?",
                 "Konfirmasi Hapus",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question
             );
 
-            if (konfirmasi == DialogResult.Yes)
+            if (confirm != DialogResult.Yes)
             {
-                // Menghapus data dari DataTable penampung memori
-                dataLapangan.Rows.RemoveAt(indeksTerpilih);
+                return;
+            }
 
-                MessageBox.Show("Data lapangan berhasil dihapus!", "Informasi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            var result = AppServices.FieldService.DeleteField(id);
 
-                // Membersihkan TextBox input dan mengembalikan kondisi form
+            MessageBox.Show(result.Message);
+
+            if (result.Success)
+            {
+                LoadFields();
                 BereskanInput();
             }
         }
@@ -283,6 +211,7 @@ namespace GuiRentalFutsal
         private void bttn_Reset_Click(object sender, EventArgs e)
         {
             BereskanInput();
+            LoadFields();
         }
 
         // Fungsi pembantu untuk mengosongkan semua field input text box
@@ -306,22 +235,21 @@ namespace GuiRentalFutsal
         // ==================== [ EVENT KLIK BARIS TABEL ] ====================
         private void GridView_Lapangan_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            // Mengamankan agar klik bukan pada bagian header kolom
-            if (e.RowIndex >= 0)
+            if (e.RowIndex < 0)
             {
-                DataGridViewRow row = GridView_Lapangan.Rows[e.RowIndex];
-
-                // Memindahkan data dari grid kembali ke text box berdasarkan urutan kolom (0, 1, 2, 3)
-                Txt_IDLapangan.Text = row.Cells[0].Value?.ToString() ?? "";
-                Txt_NamaLapangan.Text = row.Cells[1].Value?.ToString() ?? "";
-                Txt_HargaPerJam.Text = row.Cells[2].Value?.ToString() ?? "";
-
-                string statusAktif = row.Cells[3].Value?.ToString() ?? "Ya";
-                cmbBox_Status.SelectedItem = statusAktif;
-
-                // KUNCI: Kunci TextBox ID Lapangan agar tidak bisa diubah manual saat proses update
-                Txt_IDLapangan.ReadOnly = true;
+                return;
             }
+
+            DataGridViewRow row = GridView_Lapangan.Rows[e.RowIndex];
+
+            Txt_IDLapangan.Text = row.Cells[0].Value?.ToString() ?? "";
+            Txt_NamaLapangan.Text = row.Cells[1].Value?.ToString() ?? "";
+            Txt_HargaPerJam.Text = row.Cells[2].Value?.ToString() ?? "";
+
+            bool isActive = row.Cells[3].Value is bool value && value;
+            cmbBox_Status.SelectedItem = isActive ? "Ya" : "Tidak";
+
+            Txt_IDLapangan.ReadOnly = true;
         }
 
         // ==================== [ TOMBOL KEMBALI ] ====================
