@@ -41,6 +41,7 @@
             // 
             // label1
             // 
+            label1.Anchor = AnchorStyles.Top;
             label1.AutoSize = true;
             label1.Font = new Font("Microsoft Sans Serif", 20F);
             label1.Location = new Point(201, 33);
@@ -51,6 +52,7 @@
             // 
             // label2
             // 
+            label2.Anchor = AnchorStyles.Top;
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 15F);
             label2.Location = new Point(220, 74);
@@ -61,6 +63,8 @@
             // 
             // btnField
             // 
+            btnField.Anchor = AnchorStyles.None;
+            btnField.AutoSize = true;
             btnField.Location = new Point(135, 163);
             btnField.Name = "btnField";
             btnField.Size = new Size(163, 36);
@@ -71,6 +75,8 @@
             // 
             // btnBooking
             // 
+            btnBooking.Anchor = AnchorStyles.None;
+            btnBooking.AutoSize = true;
             btnBooking.Location = new Point(454, 163);
             btnBooking.Name = "btnBooking";
             btnBooking.Size = new Size(163, 36);
@@ -81,6 +87,8 @@
             // 
             // btnSchedule
             // 
+            btnSchedule.Anchor = AnchorStyles.None;
+            btnSchedule.AutoSize = true;
             btnSchedule.Location = new Point(135, 226);
             btnSchedule.Name = "btnSchedule";
             btnSchedule.Size = new Size(163, 36);
@@ -91,6 +99,8 @@
             // 
             // btnPayment
             // 
+            btnPayment.Anchor = AnchorStyles.None;
+            btnPayment.AutoSize = true;
             btnPayment.Location = new Point(454, 226);
             btnPayment.Name = "btnPayment";
             btnPayment.Size = new Size(163, 36);
@@ -101,6 +111,8 @@
             // 
             // btnReport
             // 
+            btnReport.Anchor = AnchorStyles.None;
+            btnReport.AutoSize = true;
             btnReport.Location = new Point(135, 284);
             btnReport.Name = "btnReport";
             btnReport.Size = new Size(163, 36);
@@ -111,6 +123,8 @@
             // 
             // btnExit
             // 
+            btnExit.Anchor = AnchorStyles.None;
+            btnExit.AutoSize = true;
             btnExit.Location = new Point(454, 284);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(163, 36);
@@ -121,6 +135,7 @@
             // 
             // label3
             // 
+            label3.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 10F);
             label3.Location = new Point(59, 386);
