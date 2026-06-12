@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GuiRentalFutsal.Models;
 
 namespace GuiRentalFutsal
 {
@@ -20,68 +21,83 @@ namespace GuiRentalFutsal
         public BookingForm()
         {
             InitializeComponent();
+            SetupBookingGrid();
+        }
+
+        private void SetupBookingGrid()
+        {
+            dataGridView1.AutoGenerateColumns = false;
+
+            dataGridView1.Columns["Id"].DataPropertyName = "Id";
+            dataGridView1.Columns["gPemesan"].DataPropertyName = "Pemesan";
+            dataGridView1.Columns["gNoHp"].DataPropertyName = "NoHp";
+            dataGridView1.Columns["gLapangan"].DataPropertyName = "Lapangan";
+            dataGridView1.Columns["gTanggal"].DataPropertyName = "Tanggal";
+            dataGridView1.Columns["gJam"].DataPropertyName = "Jam";
+            dataGridView1.Columns["gTotal"].DataPropertyName = "Total";
+            dataGridView1.Columns["gStatus"].DataPropertyName = "Status";
+
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.ReadOnly = true;
         }
 
         private void BookingForm_Load(object sender, EventArgs e)
         {
-            // Setup kolom tabel saat form pertama kali dimuat
-            tableData.Columns.Add("Id", typeof(int));
-            tableData.Columns.Add("Pemesan", typeof(string));
-            tableData.Columns.Add("Lapangan", typeof(string));
-            tableData.Columns.Add("Jam", typeof(string));
-            tableData.Columns.Add("Total", typeof(int));
-            tableData.Columns.Add("status", typeof(string));
 
-            // Bersihkan kolom dari UI Designer agar tidak muncul dua kali
-            dataGridView1.Columns.Clear();
-
-            // Hubungkan DataGridView dengan DataTable
-            dataGridView1.DataSource = tableData;
-
-            // Set nilai default label
             lHarga.Text = "0";
             lStatus.Text = "Tersedia";
 
             LoadFieldsToComboBox();
+            LoadBookings();
         }
 
         private void buatBooking_Click(object sender, EventArgs e)
         {
-            // 1. Validasi Input agar tidak ada data yang kosong (Ganti tLapangan dengan cmbLapangan)
             if (string.IsNullOrWhiteSpace(tNama.Text) ||
-                cmbLapangan.SelectedItem == null ||
-                string.IsNullOrWhiteSpace(tJam.Text) ||
-                string.IsNullOrWhiteSpace(tDurasi.Text))
+         string.IsNullOrWhiteSpace(tNoHp.Text) ||
+         cmbLapangan.SelectedValue == null ||
+         string.IsNullOrWhiteSpace(tJam.Text) ||
+         string.IsNullOrWhiteSpace(tDurasi.Text))
             {
                 MessageBox.Show("Mohon lengkapi semua data form!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            // 2. Validasi angka pada durasi
-            if (!int.TryParse(tDurasi.Text, out int durasi))
+            if (!TimeOnly.TryParse(tJam.Text.Trim(), out TimeOnly startTime))
             {
-                MessageBox.Show("Durasi harus berupa angka!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Format jam harus benar. Contoh: 18:00", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            // 3. Kalkulasi Harga
-            int totalHarga = durasi * HARGA_PER_JAM;
-            lHarga.Text = "Rp " + totalHarga.ToString("N0");
-            lStatus.Text = "Booked";
+            if (!int.TryParse(tDurasi.Text.Trim(), out int durationHours) || durationHours <= 0)
+            {
+                MessageBox.Show("Durasi harus berupa angka positif.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
-            // Format tanggal dan jam
-            string jamBooking = pilihTanggal.Value.ToString("dd/MM/yyyy") + " - " + tJam.Text;
+            int fieldId = (int)cmbLapangan.SelectedValue;
+            DateOnly bookingDate = DateOnly.FromDateTime(pilihTanggal.Value.Date);
 
-            // Ambil teks dari ComboBox
-            string lapanganTerpilih = cmbLapangan.Text;
-            // 4. Masukkan data ke DataGridView melalui DataTable
-            tableData.Rows.Add(idCounter, tNama.Text, lapanganTerpilih, jamBooking, totalHarga, lStatus.Text);
-            idCounter++;
+            var result = AppServices.BookingService.CreateBooking(
+                fieldId,
+                tNama.Text.Trim(),
+                tNoHp.Text.Trim(),
+                bookingDate,
+                startTime,
+                durationHours
+            );
 
-            MessageBox.Show("Booking berhasil dibuat!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(result.Message);
 
-            // 5. Bersihkan form untuk input selanjutnya
-            BersihkanForm();
+            if (result.Success && result.Data is not null)
+            {
+                lHarga.Text = "Rp " + result.Data.TotalPrice.ToString("N0");
+                lStatus.Text = result.Data.Status.ToString();
+
+                LoadBookings();
+                BersihkanForm();
+            }
         }
 
         private void cekJadwal_Click(object sender, EventArgs e)
@@ -180,6 +196,26 @@ namespace GuiRentalFutsal
             {
                 cmbLapangan.SelectedIndex = 0;
             }
+        }
+
+        private void LoadBookings()
+        {
+            var bookings = AppServices.BookingService.GetAllBookings()
+        .Select(b => new
+        {
+            b.Id,
+            Pemesan = b.CustomerName,
+            NoHp = b.CustomerPhone,
+            Lapangan = AppServices.FieldService.GetById(b.FieldId)?.Name ?? $"Lapangan {b.FieldId}",
+            Tanggal = b.Date.ToString("dd/MM/yyyy"),
+            Jam = $"{b.StartTime:HH:mm}-{b.EndTime:HH:mm}",
+            Total = b.TotalPrice,
+            Status = b.Status.ToString()
+        })
+        .ToList();
+
+            dataGridView1.DataSource = null;
+            dataGridView1.DataSource = bookings;
         }
 
         private void btnRefreshFields_Click(object sender, EventArgs e)
