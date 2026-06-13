@@ -67,7 +67,15 @@ namespace GuiRentalFutsal
 
         private void btnReport_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Laporan belum dibuat.");
+            this.Hide();
+
+            using (ReportForm reportForm = new ReportForm())
+            {
+                reportForm.ShowDialog();
+            }
+
+            this.Show();
+
         }
 
         private void btnExit_Click(object sender, EventArgs e)
