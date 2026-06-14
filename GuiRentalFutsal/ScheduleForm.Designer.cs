@@ -1,4 +1,4 @@
-﻿namespace GuiRentalFutsal
+namespace GuiRentalFutsal
 {
     partial class ScheduleForm
     {
@@ -28,100 +28,114 @@
         /// </summary>
         private void InitializeComponent()
         {
-            cmbField = new ComboBox();
-            dtpScheduleDate = new DateTimePicker();
-            cmbStartTime = new ComboBox();
-            cmbDuration = new ComboBox();
-            btnCheckAvailability = new Button();
-            lblAvailabilityResult = new Label();
+            cmbLapangan = new ComboBox();
+            dtpTanggal = new DateTimePicker();
+            cmbJamMulai = new ComboBox();
+            cmbDurasi = new ComboBox();
+            btnCekJadwal = new Button();
+            btnRefresh = new Button();
+            lblStatus = new Label();
             dgvSchedule = new DataGridView();
             colId = new DataGridViewTextBoxColumn();
-            colField = new DataGridViewTextBoxColumn();
-            colStartTime = new DataGridViewTextBoxColumn();
-            colEndTime = new DataGridViewTextBoxColumn();
+            colTanggal = new DataGridViewTextBoxColumn();
+            colLapangan = new DataGridViewTextBoxColumn();
+            colJam = new DataGridViewTextBoxColumn();
+            colDurasi = new DataGridViewTextBoxColumn();
             colStatus = new DataGridViewTextBoxColumn();
-            btnBack = new Button();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
-            label5 = new Label();
-            label6 = new Label();
+            btnKembali = new Button();
+            lblLapangan = new Label();
+            lblTanggal = new Label();
+            lblJamMulai = new Label();
+            lblDurasi = new Label();
+            lblHasilCek = new Label();
+            lblJadwal = new Label();
             ((System.ComponentModel.ISupportInitialize)dgvSchedule).BeginInit();
             SuspendLayout();
             // 
-            // cmbField
+            // cmbLapangan
             // 
-            cmbField.FormattingEnabled = true;
-            cmbField.Items.AddRange(new object[] { "Lapangan A Vinyl", "Lapangan B Sintetis", "Lapangan C Rumput" });
-            cmbField.Location = new Point(115, 55);
-            cmbField.Name = "cmbField";
-            cmbField.Size = new Size(250, 28);
-            cmbField.TabIndex = 0;
-            cmbField.SelectedIndexChanged += cmbField_SelectedIndexChanged;
+            cmbLapangan.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbLapangan.FormattingEnabled = true;
+            cmbLapangan.Location = new Point(115, 55);
+            cmbLapangan.Name = "cmbLapangan";
+            cmbLapangan.Size = new Size(250, 28);
+            cmbLapangan.TabIndex = 0;
+            cmbLapangan.SelectedIndexChanged += cmbLapangan_SelectedIndexChanged;
             // 
-            // dtpScheduleDate
+            // dtpTanggal
             // 
-            dtpScheduleDate.Location = new Point(115, 89);
-            dtpScheduleDate.Name = "dtpScheduleDate";
-            dtpScheduleDate.Size = new Size(250, 27);
-            dtpScheduleDate.TabIndex = 1;
-            dtpScheduleDate.ValueChanged += dtpScheduleDate_ValueChanged;
+            dtpTanggal.Format = DateTimePickerFormat.Short;
+            dtpTanggal.Location = new Point(115, 89);
+            dtpTanggal.Name = "dtpTanggal";
+            dtpTanggal.Size = new Size(250, 27);
+            dtpTanggal.TabIndex = 1;
+            dtpTanggal.ValueChanged += dtpTanggal_ValueChanged;
             // 
-            // cmbStartTime
+            // cmbJamMulai
             // 
-            cmbStartTime.FormattingEnabled = true;
-            cmbStartTime.Items.AddRange(new object[] { "08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00" });
-            cmbStartTime.Location = new Point(115, 122);
-            cmbStartTime.Name = "cmbStartTime";
-            cmbStartTime.Size = new Size(250, 28);
-            cmbStartTime.TabIndex = 2;
-            cmbStartTime.SelectedIndexChanged += cmbStartTime_SelectedIndexChanged;
+            cmbJamMulai.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbJamMulai.FormattingEnabled = true;
+            cmbJamMulai.Location = new Point(115, 122);
+            cmbJamMulai.Name = "cmbJamMulai";
+            cmbJamMulai.Size = new Size(250, 28);
+            cmbJamMulai.TabIndex = 2;
             // 
-            // cmbDuration
+            // cmbDurasi
             // 
-            cmbDuration.FormattingEnabled = true;
-            cmbDuration.Items.AddRange(new object[] { "1 Jam", "2 Jam", "3 Jam", "4 Jam ", "5 Jam", "6 Jam", "Full Day" });
-            cmbDuration.Location = new Point(115, 156);
-            cmbDuration.Name = "cmbDuration";
-            cmbDuration.Size = new Size(250, 28);
-            cmbDuration.TabIndex = 3;
-            cmbDuration.SelectedIndexChanged += cmbDuration_SelectedIndexChanged;
+            cmbDurasi.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDurasi.FormattingEnabled = true;
+            cmbDurasi.Location = new Point(115, 156);
+            cmbDurasi.Name = "cmbDurasi";
+            cmbDurasi.Size = new Size(250, 28);
+            cmbDurasi.TabIndex = 3;
+            cmbDurasi.SelectedIndexChanged += cmbDurasi_SelectedIndexChanged;
             // 
-            // btnCheckAvailability
+            // btnCekJadwal
             // 
-            btnCheckAvailability.Location = new Point(115, 222);
-            btnCheckAvailability.Name = "btnCheckAvailability";
-            btnCheckAvailability.Size = new Size(250, 29);
-            btnCheckAvailability.TabIndex = 4;
-            btnCheckAvailability.Text = "Cek Ketersediaan";
-            btnCheckAvailability.UseVisualStyleBackColor = true;
-            btnCheckAvailability.Click += btnCheckAvailability_Click;
+            btnCekJadwal.Location = new Point(115, 222);
+            btnCekJadwal.Name = "btnCekJadwal";
+            btnCekJadwal.Size = new Size(250, 29);
+            btnCekJadwal.TabIndex = 4;
+            btnCekJadwal.Text = "Cek Ketersediaan";
+            btnCekJadwal.UseVisualStyleBackColor = true;
+            btnCekJadwal.Click += btnCekJadwal_Click;
             // 
-            // lblAvailabilityResult
+            // btnRefresh
             // 
-            lblAvailabilityResult.BorderStyle = BorderStyle.FixedSingle;
-            lblAvailabilityResult.Location = new Point(12, 319);
-            lblAvailabilityResult.Name = "lblAvailabilityResult";
-            lblAvailabilityResult.Size = new Size(353, 25);
-            lblAvailabilityResult.TabIndex = 5;
-            lblAvailabilityResult.Text = "-";
-            lblAvailabilityResult.Click += lblAvailabilityResult_Click;
+            btnRefresh.Location = new Point(115, 257);
+            btnRefresh.Name = "btnRefresh";
+            btnRefresh.Size = new Size(250, 29);
+            btnRefresh.TabIndex = 5;
+            btnRefresh.Text = "Refresh";
+            btnRefresh.UseVisualStyleBackColor = true;
+            btnRefresh.Click += btnRefresh_Click;
+            // 
+            // lblStatus
+            // 
+            lblStatus.BorderStyle = BorderStyle.FixedSingle;
+            lblStatus.Location = new Point(12, 319);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(353, 25);
+            lblStatus.TabIndex = 6;
+            lblStatus.Text = "-";
+            lblStatus.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // dgvSchedule
             // 
             dgvSchedule.AllowUserToAddRows = false;
+            dgvSchedule.AllowUserToDeleteRows = false;
+            dgvSchedule.AutoGenerateColumns = false;
             dgvSchedule.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvSchedule.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvSchedule.Columns.AddRange(new DataGridViewColumn[] { colId, colField, colStartTime, colEndTime, colStatus });
+            dgvSchedule.Columns.AddRange(new DataGridViewColumn[] { colId, colTanggal, colLapangan, colJam, colDurasi, colStatus });
             dgvSchedule.Location = new Point(371, 32);
+            dgvSchedule.MultiSelect = false;
             dgvSchedule.Name = "dgvSchedule";
             dgvSchedule.ReadOnly = true;
             dgvSchedule.RowHeadersWidth = 51;
             dgvSchedule.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvSchedule.Size = new Size(679, 406);
-            dgvSchedule.TabIndex = 6;
-            dgvSchedule.CellContentClick += dgvSchedule_CellContentClick;
+            dgvSchedule.TabIndex = 7;
             // 
             // colId
             // 
@@ -130,26 +144,33 @@
             colId.Name = "colId";
             colId.ReadOnly = true;
             // 
-            // colField
+            // colTanggal
             // 
-            colField.HeaderText = "Lapangan";
-            colField.MinimumWidth = 6;
-            colField.Name = "colField";
-            colField.ReadOnly = true;
+            colTanggal.HeaderText = "Tanggal";
+            colTanggal.MinimumWidth = 6;
+            colTanggal.Name = "colTanggal";
+            colTanggal.ReadOnly = true;
             // 
-            // colStartTime
+            // colLapangan
             // 
-            colStartTime.HeaderText = "Jam Mulai";
-            colStartTime.MinimumWidth = 6;
-            colStartTime.Name = "colStartTime";
-            colStartTime.ReadOnly = true;
+            colLapangan.HeaderText = "Lapangan";
+            colLapangan.MinimumWidth = 6;
+            colLapangan.Name = "colLapangan";
+            colLapangan.ReadOnly = true;
             // 
-            // colEndTime
+            // colJam
             // 
-            colEndTime.HeaderText = "Jam Selesai";
-            colEndTime.MinimumWidth = 6;
-            colEndTime.Name = "colEndTime";
-            colEndTime.ReadOnly = true;
+            colJam.HeaderText = "Jam";
+            colJam.MinimumWidth = 6;
+            colJam.Name = "colJam";
+            colJam.ReadOnly = true;
+            // 
+            // colDurasi
+            // 
+            colDurasi.HeaderText = "Durasi";
+            colDurasi.MinimumWidth = 6;
+            colDurasi.Name = "colDurasi";
+            colDurasi.ReadOnly = true;
             // 
             // colStatus
             // 
@@ -158,92 +179,94 @@
             colStatus.Name = "colStatus";
             colStatus.ReadOnly = true;
             // 
-            // btnBack
+            // btnKembali
             // 
-            btnBack.Location = new Point(10, 407);
-            btnBack.Name = "btnBack";
-            btnBack.Size = new Size(94, 29);
-            btnBack.TabIndex = 7;
-            btnBack.Text = "Kembali";
-            btnBack.UseVisualStyleBackColor = true;
-            btnBack.Click += btnBack_Click;
+            btnKembali.Location = new Point(10, 407);
+            btnKembali.Name = "btnKembali";
+            btnKembali.Size = new Size(94, 29);
+            btnKembali.TabIndex = 8;
+            btnKembali.Text = "Kembali";
+            btnKembali.UseVisualStyleBackColor = true;
+            btnKembali.Click += btnKembali_Click;
             // 
-            // label1
+            // lblLapangan
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(10, 58);
-            label1.Name = "label1";
-            label1.Size = new Size(97, 20);
-            label1.TabIndex = 8;
-            label1.Text = "Lapangan     :";
+            lblLapangan.AutoSize = true;
+            lblLapangan.Location = new Point(10, 58);
+            lblLapangan.Name = "lblLapangan";
+            lblLapangan.Size = new Size(97, 20);
+            lblLapangan.TabIndex = 9;
+            lblLapangan.Text = "Lapangan     :";
             // 
-            // label2
+            // lblTanggal
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(10, 94);
-            label2.Name = "label2";
-            label2.Size = new Size(96, 20);
-            label2.TabIndex = 9;
-            label2.Text = "Tanggal        :";
+            lblTanggal.AutoSize = true;
+            lblTanggal.Location = new Point(10, 94);
+            lblTanggal.Name = "lblTanggal";
+            lblTanggal.Size = new Size(96, 20);
+            lblTanggal.TabIndex = 10;
+            lblTanggal.Text = "Tanggal        :";
             // 
-            // label3
+            // lblJamMulai
             // 
-            label3.AutoSize = true;
-            label3.Location = new Point(10, 125);
-            label3.Name = "label3";
-            label3.Size = new Size(95, 20);
-            label3.TabIndex = 10;
-            label3.Text = "Jam Mulai    :";
+            lblJamMulai.AutoSize = true;
+            lblJamMulai.Location = new Point(10, 125);
+            lblJamMulai.Name = "lblJamMulai";
+            lblJamMulai.Size = new Size(95, 20);
+            lblJamMulai.TabIndex = 11;
+            lblJamMulai.Text = "Jam Mulai    :";
             // 
-            // label4
+            // lblDurasi
             // 
-            label4.AutoSize = true;
-            label4.Location = new Point(10, 159);
-            label4.Name = "label4";
-            label4.Size = new Size(94, 20);
-            label4.TabIndex = 11;
-            label4.Text = "Durasi          :";
+            lblDurasi.AutoSize = true;
+            lblDurasi.Location = new Point(10, 159);
+            lblDurasi.Name = "lblDurasi";
+            lblDurasi.Size = new Size(94, 20);
+            lblDurasi.TabIndex = 12;
+            lblDurasi.Text = "Durasi          :";
             // 
-            // label5
+            // lblHasilCek
             // 
-            label5.AutoSize = true;
-            label5.Location = new Point(10, 299);
-            label5.Name = "label5";
-            label5.Size = new Size(77, 20);
-            label5.TabIndex = 12;
-            label5.Text = "Hasil Cek :\n";
+            lblHasilCek.AutoSize = true;
+            lblHasilCek.Location = new Point(10, 299);
+            lblHasilCek.Name = "lblHasilCek";
+            lblHasilCek.Size = new Size(77, 20);
+            lblHasilCek.TabIndex = 13;
+            lblHasilCek.Text = "Hasil Cek :";
             // 
-            // label6
+            // lblJadwal
             // 
-            label6.AutoSize = true;
-            label6.Location = new Point(596, 9);
-            label6.Name = "label6";
-            label6.Size = new Size(234, 20);
-            label6.TabIndex = 13;
-            label6.Text = "Jadwal Booking pada Tanggal Ini :\n";
+            lblJadwal.AutoSize = true;
+            lblJadwal.Location = new Point(596, 9);
+            lblJadwal.Name = "lblJadwal";
+            lblJadwal.Size = new Size(234, 20);
+            lblJadwal.TabIndex = 14;
+            lblJadwal.Text = "Jadwal Booking pada Tanggal Ini :";
             // 
             // ScheduleForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1056, 448);
-            Controls.Add(label6);
-            Controls.Add(label5);
-            Controls.Add(label4);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
-            Controls.Add(btnBack);
+            Controls.Add(lblJadwal);
+            Controls.Add(lblHasilCek);
+            Controls.Add(lblDurasi);
+            Controls.Add(lblJamMulai);
+            Controls.Add(lblTanggal);
+            Controls.Add(lblLapangan);
+            Controls.Add(btnKembali);
             Controls.Add(dgvSchedule);
-            Controls.Add(lblAvailabilityResult);
-            Controls.Add(btnCheckAvailability);
-            Controls.Add(cmbDuration);
-            Controls.Add(cmbStartTime);
-            Controls.Add(dtpScheduleDate);
-            Controls.Add(cmbField);
+            Controls.Add(lblStatus);
+            Controls.Add(btnRefresh);
+            Controls.Add(btnCekJadwal);
+            Controls.Add(cmbDurasi);
+            Controls.Add(cmbJamMulai);
+            Controls.Add(dtpTanggal);
+            Controls.Add(cmbLapangan);
             Name = "ScheduleForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Cek Jadwal Lapangan";
+            Load += ScheduleForm_Load;
             ((System.ComponentModel.ISupportInitialize)dgvSchedule).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -251,24 +274,26 @@
 
         #endregion
 
-        private ComboBox cmbField;
-        private DateTimePicker dtpScheduleDate;
-        private ComboBox cmbStartTime;
-        private ComboBox cmbDuration;
-        private Button btnCheckAvailability;
-        private Label lblAvailabilityResult;
+        private ComboBox cmbLapangan;
+        private DateTimePicker dtpTanggal;
+        private ComboBox cmbJamMulai;
+        private ComboBox cmbDurasi;
+        private Button btnCekJadwal;
+        private Button btnRefresh;
+        private Label lblStatus;
         private DataGridView dgvSchedule;
-        private Button btnBack;
-        private Label label1;
-        private Label label2;
-        private Label label3;
-        private Label label4;
-        private Label label5;
-        private Label label6;
+        private Button btnKembali;
+        private Label lblLapangan;
+        private Label lblTanggal;
+        private Label lblJamMulai;
+        private Label lblDurasi;
+        private Label lblHasilCek;
+        private Label lblJadwal;
         private DataGridViewTextBoxColumn colId;
-        private DataGridViewTextBoxColumn colField;
-        private DataGridViewTextBoxColumn colStartTime;
-        private DataGridViewTextBoxColumn colEndTime;
+        private DataGridViewTextBoxColumn colTanggal;
+        private DataGridViewTextBoxColumn colLapangan;
+        private DataGridViewTextBoxColumn colJam;
+        private DataGridViewTextBoxColumn colDurasi;
         private DataGridViewTextBoxColumn colStatus;
     }
 }
