@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
+using GuiRentalFutsal.Models;
+using System;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -9,109 +7,31 @@ namespace GuiRentalFutsal
 {
     public partial class ScheduleForm : Form
     {
-        private bool isLoading = true;
-
-        private readonly TimeSpan openingTime = new TimeSpan(8, 0, 0);
-        private readonly TimeSpan closingTime = new TimeSpan(23, 0, 0);
-
-        private List<BookingSchedule> scheduleList = new List<BookingSchedule>();
+        private bool isLoading;
 
         public ScheduleForm()
         {
             InitializeComponent();
+        }
 
-            SetupDataGridView();
-            SetupDummyData();
-            SetupComboBox();
+        private void ScheduleForm_Load(object sender, EventArgs e)
+        {
+            isLoading = true;
+
+            dtpTanggal.MinDate = DateTime.Today;
+            dtpTanggal.Value = DateTime.Today;
+
+            SetupScheduleGrid();
+            SetupTimeComboBoxes();
+            LoadFieldsToComboBox();
+
+            lblStatus.Text = "-";
 
             isLoading = false;
-            ShowScheduleData();
+            LoadScheduleData();
         }
 
-        private class BookingSchedule
-        {
-            public int Id { get; set; }
-            public string Lapangan { get; set; }
-            public DateTime Tanggal { get; set; }
-            public TimeSpan JamMulai { get; set; }
-            public TimeSpan JamSelesai { get; set; }
-            public string Status { get; set; }
-        }
-
-        private void SetupComboBox()
-        {
-            cmbField.Items.Clear();
-            cmbField.Items.Add("Lapangan A Vinyl");
-            cmbField.Items.Add("Lapangan B Sintetis");
-            cmbField.Items.Add("Lapangan C Rumput");
-
-            cmbStartTime.Items.Clear();
-            for (int i = 8; i <= 22; i++)
-            {
-                cmbStartTime.Items.Add(i.ToString("00") + ":00");
-            }
-
-            cmbDuration.Items.Clear();
-            for (int i = 1; i <= 6; i++)
-            {
-                cmbDuration.Items.Add(i + " Jam");
-            }
-
-            cmbDuration.Items.Add("Full Day");
-
-            cmbField.SelectedIndex = 0;
-            cmbStartTime.SelectedIndex = 10; // 18:00
-            cmbDuration.SelectedIndex = 1;  // 2 Jam
-
-            cmbField.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbStartTime.DropDownStyle = ComboBoxStyle.DropDownList;
-            cmbDuration.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            dtpScheduleDate.Format = DateTimePickerFormat.Custom;
-            dtpScheduleDate.CustomFormat = "dd/MM/yyyy";
-
-            // Tidak bisa memilih tanggal sebelum hari ini
-            dtpScheduleDate.MinDate = DateTime.Today;
-            dtpScheduleDate.Value = DateTime.Today;
-
-            lblAvailabilityResult.Text = "Silakan cek ketersediaan jadwal.";
-            lblAvailabilityResult.BackColor = Color.White;
-        }
-
-        private void SetupDummyData()
-        {
-            scheduleList.Add(new BookingSchedule
-            {
-                Id = 1,
-                Lapangan = "Lapangan A Vinyl",
-                Tanggal = DateTime.Today,
-                JamMulai = new TimeSpan(18, 0, 0),
-                JamSelesai = new TimeSpan(20, 0, 0),
-                Status = "Paid"
-            });
-
-            scheduleList.Add(new BookingSchedule
-            {
-                Id = 2,
-                Lapangan = "Lapangan A Vinyl",
-                Tanggal = DateTime.Today,
-                JamMulai = new TimeSpan(20, 0, 0),
-                JamSelesai = new TimeSpan(21, 0, 0),
-                Status = "Pending"
-            });
-
-            scheduleList.Add(new BookingSchedule
-            {
-                Id = 3,
-                Lapangan = "Lapangan B Sintetis",
-                Tanggal = DateTime.Today,
-                JamMulai = new TimeSpan(10, 0, 0),
-                JamSelesai = new TimeSpan(12, 0, 0),
-                Status = "Paid"
-            });
-        }
-
-        private void SetupDataGridView()
+        private void SetupScheduleGrid()
         {
             dgvSchedule.AutoGenerateColumns = false;
             dgvSchedule.Columns.Clear();
@@ -125,23 +45,30 @@ namespace GuiRentalFutsal
 
             dgvSchedule.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "colField",
+                Name = "colTanggal",
+                HeaderText = "Tanggal",
+                DataPropertyName = "Tanggal"
+            });
+
+            dgvSchedule.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colLapangan",
                 HeaderText = "Lapangan",
                 DataPropertyName = "Lapangan"
             });
 
             dgvSchedule.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "colStartTime",
-                HeaderText = "Jam Mulai",
-                DataPropertyName = "JamMulai"
+                Name = "colJam",
+                HeaderText = "Jam",
+                DataPropertyName = "Jam"
             });
 
             dgvSchedule.Columns.Add(new DataGridViewTextBoxColumn
             {
-                Name = "colEndTime",
-                HeaderText = "Jam Selesai",
-                DataPropertyName = "JamSelesai"
+                Name = "colDurasi",
+                HeaderText = "Durasi",
+                DataPropertyName = "Durasi"
             });
 
             dgvSchedule.Columns.Add(new DataGridViewTextBoxColumn
@@ -151,160 +78,189 @@ namespace GuiRentalFutsal
                 DataPropertyName = "Status"
             });
 
-            dgvSchedule.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvSchedule.AllowUserToAddRows = false;
             dgvSchedule.ReadOnly = true;
+            dgvSchedule.AllowUserToAddRows = false;
+            dgvSchedule.AllowUserToDeleteRows = false;
             dgvSchedule.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvSchedule.MultiSelect = false;
+            dgvSchedule.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
-        private void ShowScheduleData()
+        private void SetupTimeComboBoxes()
         {
-            if (cmbField.SelectedItem == null)
+            cmbJamMulai.Items.Clear();
+            for (int hour = 8; hour <= 22; hour++)
             {
-                return;
+                cmbJamMulai.Items.Add($"{hour:00}:00");
             }
 
-            string selectedField = cmbField.SelectedItem.ToString();
-            DateTime selectedDate = dtpScheduleDate.Value.Date;
+            cmbDurasi.Items.Clear();
+            for (int duration = 1; duration <= 6; duration++)
+            {
+                cmbDurasi.Items.Add($"{duration} Jam");
+            }
+            cmbDurasi.Items.Add("Full Day");
 
-            var data = scheduleList
-                .Where(s => s.Lapangan == selectedField && s.Tanggal.Date == selectedDate)
-                .Select(s => new
+            cmbJamMulai.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbDurasi.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            if (cmbJamMulai.Items.Count > 0)
+            {
+                cmbJamMulai.SelectedIndex = 0;
+            }
+
+            if (cmbDurasi.Items.Count > 0)
+            {
+                cmbDurasi.SelectedIndex = 0;
+            }
+        }
+
+        private void LoadFieldsToComboBox()
+        {
+            var fields = AppServices.FieldService.GetActiveFields();
+
+            cmbLapangan.DataSource = null;
+            cmbLapangan.DisplayMember = "Name";
+            cmbLapangan.ValueMember = "Id";
+            cmbLapangan.DataSource = fields;
+            cmbLapangan.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            if (cmbLapangan.Items.Count > 0)
+            {
+                cmbLapangan.SelectedIndex = 0;
+            }
+        }
+
+        private void LoadScheduleData()
+        {
+            DateOnly selectedDate = DateOnly.FromDateTime(dtpTanggal.Value.Date);
+            int? selectedFieldId = GetSelectedFieldId();
+
+            var data = AppServices.BookingService.GetAllBookings()
+                .Where(b => b.Date == selectedDate)
+                .Where(b => b.Status != BookingStatus.Cancelled)
+                .Where(b => !selectedFieldId.HasValue || b.FieldId == selectedFieldId.Value)
+                .OrderBy(b => b.StartTime)
+                .Select(b => new
                 {
-                    s.Id,
-                    s.Lapangan,
-                    JamMulai = s.JamMulai.ToString(@"hh\:mm"),
-                    JamSelesai = s.JamSelesai.ToString(@"hh\:mm"),
-                    s.Status
+                    b.Id,
+                    Tanggal = b.Date.ToString("dd/MM/yyyy"),
+                    Lapangan = AppServices.FieldService.GetById(b.FieldId)?.Name ?? "-",
+                    Jam = $"{b.StartTime:HH:mm}-{b.EndTime:HH:mm}",
+                    Durasi = $"{b.DurationHours} Jam",
+                    Status = b.Status.ToString()
                 })
                 .ToList();
 
             dgvSchedule.DataSource = data;
         }
 
-        private void cmbField_SelectedIndexChanged(object sender, EventArgs e)
+        private int GetSelectedDurationHours()
         {
-            if (!isLoading)
+            if (cmbDurasi.Text.Equals("Full Day", StringComparison.OrdinalIgnoreCase))
             {
-                ShowScheduleData();
+                return 15;
             }
+
+            string durationText = cmbDurasi.Text.Trim();
+            string numberText = durationText.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? string.Empty;
+
+            return int.TryParse(numberText, out int durationHours) ? durationHours : 0;
         }
 
-        private void dtpScheduleDate_ValueChanged(object sender, EventArgs e)
+        private int? GetSelectedFieldId()
         {
-            if (!isLoading)
+            if (cmbLapangan.SelectedValue is int fieldId)
             {
-                ShowScheduleData();
+                return fieldId;
             }
-        }
 
-        private void cmbStartTime_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void cmbDuration_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbDuration.SelectedItem == null)
+            if (cmbLapangan.SelectedItem is Field field)
             {
+                return field.Id;
+            }
+
+            return null;
+        }
+
+        private void btnCekJadwal_Click(object sender, EventArgs e)
+        {
+            int? fieldId = GetSelectedFieldId();
+            if (!fieldId.HasValue)
+            {
+                MessageBox.Show("Pilih lapangan terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (cmbDuration.SelectedItem.ToString() == "Full Day")
+            if (cmbJamMulai.SelectedItem == null)
             {
-                cmbStartTime.SelectedItem = "08:00";
-                cmbStartTime.Enabled = false;
-            }
-            else
-            {
-                cmbStartTime.Enabled = true;
-            }
-        }
-
-        private void btnCheckAvailability_Click(object sender, EventArgs e)
-        {
-            if (cmbField.SelectedItem == null || cmbStartTime.SelectedItem == null || cmbDuration.SelectedItem == null)
-            {
-                MessageBox.Show("Lengkapi data terlebih dahulu!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Pilih jam mulai terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            string selectedField = cmbField.SelectedItem.ToString();
-            DateTime selectedDate = dtpScheduleDate.Value.Date;
-
-            if (selectedDate < DateTime.Today)
+            int durationHours = GetSelectedDurationHours();
+            if (durationHours <= 0)
             {
-                lblAvailabilityResult.Text = "Tanggal tidak valid. Tidak bisa mengecek jadwal yang sudah lewat.";
-                lblAvailabilityResult.BackColor = Color.LightCoral;
+                MessageBox.Show("Pilih durasi yang valid.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            TimeSpan startTime;
-            TimeSpan endTime;
-
-            string durationText = cmbDuration.SelectedItem.ToString();
-
-            if (durationText == "Full Day")
+            if (!TimeOnly.TryParse(cmbJamMulai.Text, out TimeOnly startTime))
             {
-                startTime = openingTime; // 08:00
-                endTime = closingTime;   // 23:00
-            }
-            else
-            {
-                startTime = TimeSpan.Parse(cmbStartTime.SelectedItem.ToString());
-
-                int duration = int.Parse(durationText.Split(' ')[0]);
-                endTime = startTime.Add(TimeSpan.FromHours(duration));
-            }
-
-            if (endTime > closingTime)
-            {
-                lblAvailabilityResult.Text = "Jadwal tidak valid. Jam selesai melebihi jam operasional.";
-                lblAvailabilityResult.BackColor = Color.LightCoral;
+                MessageBox.Show("Jam mulai tidak valid.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            bool isConflict = scheduleList.Any(s =>
-                s.Lapangan == selectedField &&
-                s.Tanggal.Date == selectedDate &&
-                startTime < s.JamSelesai &&
-                endTime > s.JamMulai
-            );
+            DateOnly bookingDate = DateOnly.FromDateTime(dtpTanggal.Value.Date);
+            var result = AppServices.ScheduleService.IsAvailable(fieldId.Value, bookingDate, startTime, durationHours);
 
-            if (isConflict)
-            {
-                lblAvailabilityResult.Text = "Jadwal tidak tersedia. Silakan pilih jam lain.";
-                lblAvailabilityResult.BackColor = Color.LightCoral;
-            }
-            else
-            {
-                lblAvailabilityResult.Text = "Jadwal tersedia. Booking dapat dibuat.";
-                lblAvailabilityResult.BackColor = Color.LightGreen;
-            }
+            lblStatus.Text = result.Success && result.Data ? "Tersedia" : "Penuh";
+            MessageBox.Show(result.Message);
 
-            ShowScheduleData();
+            LoadScheduleData();
         }
 
-        private void lblAvailabilityResult_Click(object sender, EventArgs e)
+        private void btnRefresh_Click(object sender, EventArgs e)
         {
+            isLoading = true;
+            LoadFieldsToComboBox();
+            isLoading = false;
 
+            LoadScheduleData();
         }
 
-        private void btnBack_Click(object sender, EventArgs e)
+        private void btnKembali_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(
-                "Kembali ke dashboard utama.",
-                "Informasi",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information
-            );
-
             this.Close();
         }
 
-        private void dgvSchedule_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void cmbDurasi_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (cmbDurasi.Text.Equals("Full Day", StringComparison.OrdinalIgnoreCase))
+            {
+                cmbJamMulai.SelectedItem = "08:00";
+                cmbJamMulai.Enabled = false;
+            }
+            else
+            {
+                cmbJamMulai.Enabled = true;
+            }
+        }
 
+        private void cmbLapangan_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!isLoading)
+            {
+                LoadScheduleData();
+            }
+        }
+
+        private void dtpTanggal_ValueChanged(object sender, EventArgs e)
+        {
+            if (!isLoading)
+            {
+                LoadScheduleData();
+            }
         }
     }
 }
