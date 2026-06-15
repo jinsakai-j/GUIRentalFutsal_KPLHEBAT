@@ -1,6 +1,6 @@
 ﻿namespace GuiRentalFutsal
 {
-    partial class Form1
+    partial class DashboardForm
     {
         /// <summary>
         ///  Required designer variable.
