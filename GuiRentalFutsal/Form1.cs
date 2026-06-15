@@ -62,7 +62,14 @@ namespace GuiRentalFutsal
 
         private void btnPayment_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Form Pembayaran belum dibuat.");
+            this.Hide();
+            using (PaymentForm PaymentForm = new PaymentForm())
+            {
+                PaymentForm.ShowDialog();
+            }
+
+            this.Show();
+
         }
 
         private void btnReport_Click(object sender, EventArgs e)
