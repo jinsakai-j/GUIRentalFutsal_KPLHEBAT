@@ -51,6 +51,7 @@
             MetodeBayarCmb = new ComboBox();
             CariBtn = new Button();
             label1 = new Label();
+            KembaliBtn = new Button();
             ((System.ComponentModel.ISupportInitialize)RiwayatPembayaranDgv).BeginInit();
             SuspendLayout();
             // 
@@ -241,11 +242,22 @@
             label1.Text = "Konfirmasi Pembayaran";
             label1.Click += label1_Click;
             // 
+            // KembaliBtn
+            // 
+            KembaliBtn.Location = new Point(653, 42);
+            KembaliBtn.Name = "KembaliBtn";
+            KembaliBtn.Size = new Size(120, 23);
+            KembaliBtn.TabIndex = 22;
+            KembaliBtn.Text = "Kembali";
+            KembaliBtn.UseVisualStyleBackColor = true;
+            KembaliBtn.Click += KembaliBtn_Click;
+            // 
             // PaymentForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 487);
+            Controls.Add(KembaliBtn);
             Controls.Add(label1);
             Controls.Add(CariBtn);
             Controls.Add(MetodeBayarCmb);
@@ -301,5 +313,6 @@
         private ComboBox MetodeBayarCmb;
         private Button CariBtn;
         private Label label1;
+        private Button KembaliBtn;
     }
 }
