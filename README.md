@@ -1,14 +1,30 @@
 # GUIRentalFutsal - KPLHEBAT
 
-GUIRentalFutsal adalah aplikasi **Windows Forms** berbasis C# untuk sistem penyewaan lapangan futsal. Project ini merupakan pengembangan dari tugas besar sebelumnya yang berbasis backend/service, lalu diadaptasi menjadi aplikasi desktop menggunakan **C# Windows Forms**.
+GUIRentalFutsal adalah aplikasi desktop berbasis **C# Windows Forms** untuk sistem penyewaan lapangan futsal. Aplikasi ini dibuat sebagai pengembangan tugas besar Konstruksi Perangkat Lunak dengan fokus pada implementasi GUI, integrasi service, penyimpanan data JSON, dan penerapan teknik konstruksi perangkat lunak.
 
-Project ini dibuat untuk memenuhi tugas besar mata kuliah **Konstruksi Perangkat Lunak (CLO4)**.
+---
 
-## Deskripsi Aplikasi
+## Deskripsi Project
 
-Aplikasi ini digunakan untuk membantu proses penyewaan lapangan futsal, mulai dari pengelolaan data lapangan, pembuatan booking, pengecekan jadwal, pembayaran, hingga laporan.
+Aplikasi ini digunakan untuk membantu proses rental lapangan futsal, mulai dari pengelolaan lapangan, pembuatan booking, pengecekan jadwal, pembayaran, hingga laporan.
 
-Pada versi CLO4, aplikasi menggunakan tampilan **Windows Forms**. Logic bisnis diletakkan pada folder `Services`, data disimpan dalam file JSON, dan setiap form mengakses service melalui `AppServices`.
+Pada project ini, GUI dibuat menggunakan **Windows Forms**, sedangkan logic bisnis dipisahkan ke dalam folder `Services`. Data aplikasi disimpan menggunakan file JSON melalui class `JsonDataStore`.
+
+Alur arsitektur sederhana:
+
+```text
+Windows Form
+↓
+AppServices
+↓
+Service
+↓
+JsonDataStore
+↓
+JSON File
+```
+
+---
 
 ## Teknologi yang Digunakan
 
@@ -21,13 +37,15 @@ Pada versi CLO4, aplikasi menggunakan tampilan **Windows Forms**. Logic bisnis d
 | IDE                | Visual Studio 2022 |
 | Version Control    | Git dan GitHub     |
 
+---
+
 ## Fitur Aplikasi
 
 ### 1. Dashboard
 
-Dashboard berada pada `Form1.cs` dan menjadi halaman utama aplikasi.
+Dashboard berada pada `DashboardForm.cs` dan berfungsi sebagai menu utama aplikasi.
 
-Fitur dashboard:
+Fitur:
 
 * Membuka Form Kelola Lapangan
 * Membuka Form Booking
@@ -36,24 +54,33 @@ Fitur dashboard:
 * Membuka Form Laporan
 * Keluar dari aplikasi
 
+File terkait:
+
+* `DashboardForm.cs`
+
+---
+
 ### 2. Kelola Lapangan
 
-Form kelola lapangan digunakan untuk mengelola data lapangan futsal.
+Form kelola lapangan digunakan untuk mengatur data lapangan futsal.
 
 Fitur:
 
 * Menampilkan daftar lapangan dari `fields.json`
-* Menambah lapangan
+* Menambah data lapangan
 * Mengubah data lapangan
-* Menghapus lapangan
+* Menghapus data lapangan
 * Mengatur status aktif lapangan
+* Menyimpan perubahan data lapangan ke JSON
 
-Data lapangan diproses melalui:
+File terkait:
 
-* `FieldForm`
-* `FieldService`
+* `FieldForm.cs`
+* `FieldService.cs`
 * `JsonDataStore<Field>`
 * `Data/fields.json`
+
+---
 
 ### 3. Booking
 
@@ -66,23 +93,33 @@ Fitur:
 * Memilih jam mulai booking
 * Memilih durasi booking
 * Mendukung durasi 1 sampai 6 jam
-* Mendukung opsi Full Day
+* Mendukung opsi `Full Day`
 * Menghitung total harga booking
-* Menyimpan booking ke `bookings.json`
+* Mengecek ketersediaan jadwal sebelum booking
+* Menyimpan data booking ke `bookings.json`
 * Menampilkan daftar booking pada tabel
 
-Data booking diproses melalui:
+Aturan booking:
 
-* `BookingForm`
-* `BookingService`
-* `ScheduleService`
-* `FieldService`
-* `JsonDataStore<Booking>`
+* Jam operasional: `08:00 - 23:00`
+* Jam mulai terakhir: `22:00`
+* Booking tidak boleh melewati jam operasional
+* Booking baru memiliki status `PendingPayment`
+* Jadwal tidak boleh bentrok dengan booking lain
+
+File terkait:
+
+* `BookingForm.cs`
+* `BookingService.cs`
+* `ScheduleService.cs`
+* `FieldService.cs`
 * `Data/bookings.json`
+
+---
 
 ### 4. Cek Jadwal
 
-Form cek jadwal digunakan untuk mengecek ketersediaan lapangan.
+Form cek jadwal digunakan untuk mengecek ketersediaan jadwal lapangan.
 
 Fitur:
 
@@ -90,16 +127,19 @@ Fitur:
 * Memilih tanggal
 * Memilih jam mulai
 * Memilih durasi
+* Mendukung opsi `Full Day`
 * Mengecek apakah jadwal tersedia atau penuh
-* Menampilkan booking sesuai tanggal dan lapangan
+* Menampilkan booking berdasarkan tanggal dan lapangan
 * Mengambil data dari `bookings.json`
 
-Data jadwal diproses melalui:
+File terkait:
 
-* `ScheduleForm`
-* `ScheduleService`
-* `BookingService`
-* `FieldService`
+* `ScheduleForm.cs`
+* `ScheduleService.cs`
+* `BookingService.cs`
+* `FieldService.cs`
+
+---
 
 ### 5. Pembayaran
 
@@ -107,25 +147,29 @@ Form pembayaran digunakan untuk memproses pembayaran booking.
 
 Fitur:
 
-* Menampilkan data booking
-* Memproses pembayaran
-* Mengubah status booking sesuai state machine
+* Menampilkan daftar booking dengan status `PendingPayment`
+* Menampilkan detail booking yang dipilih
 * Memvalidasi jumlah pembayaran
+* Memproses pembayaran booking
+* Mengubah status booking menjadi `Paid`
+* Menyimpan perubahan status ke `bookings.json`
 
-Data pembayaran diproses melalui:
+File terkait:
 
-* `PaymentForm`
-* `PaymentService`
-* `BookingService`
-* `BookingStateMachine`
+* `PaymentForm.cs`
+* `PaymentService.cs`
+* `BookingService.cs`
+* `BookingStateMachine.cs`
+
+---
 
 ### 6. Laporan
 
-Form laporan digunakan untuk menampilkan ringkasan data booking dan pendapatan.
+Form laporan digunakan untuk menampilkan ringkasan booking dan pendapatan.
 
 Fitur:
 
-* Filter periode laporan
+* Filter laporan berdasarkan periode awal dan periode akhir
 * Menampilkan total booking
 * Menampilkan booking pending
 * Menampilkan booking paid
@@ -134,12 +178,20 @@ Fitur:
 * Menampilkan total pendapatan
 * Menampilkan detail booking pada tabel
 
-Data laporan diproses melalui:
+Aturan laporan:
 
-* `ReportForm`
-* `ReportService`
-* `BookingService`
-* `FieldService`
+* Total pendapatan dihitung dari booking dengan status `Paid` dan `Completed`
+* Booking dengan status `Cancelled` tidak dihitung sebagai pendapatan
+* Data laporan diambil dari `bookings.json`
+
+File terkait:
+
+* `ReportForm.cs`
+* `ReportService.cs`
+* `BookingService.cs`
+* `FieldService.cs`
+
+---
 
 ## Struktur Project
 
@@ -168,7 +220,7 @@ GuiRentalFutsal/
 │   └── TimeOnlyConverter.cs
 │
 ├── AppServices.cs
-├── Form1.cs
+├── DashboardForm.cs
 ├── FieldForm.cs
 ├── BookingForm.cs
 ├── ScheduleForm.cs
@@ -177,29 +229,57 @@ GuiRentalFutsal/
 └── Program.cs
 ```
 
+---
+
 ## Arsitektur Aplikasi
 
 Project ini menggunakan pemisahan sederhana antara tampilan, logic bisnis, dan penyimpanan data.
 
-```text
-Windows Form
-↓
-AppServices
-↓
-Service
-↓
-JsonDataStore
-↓
-File JSON
-```
+### Windows Form
 
-Penjelasan:
+Digunakan sebagai tampilan aplikasi dan tempat user melakukan input.
 
-* **Windows Form** digunakan sebagai tampilan aplikasi dan input user.
-* **AppServices** digunakan sebagai pusat akses service agar form tidak membuat object service secara manual berulang kali.
-* **Services** berisi logic bisnis seperti booking, jadwal, pembayaran, laporan, dan kelola lapangan.
-* **Models** berisi representasi data seperti booking, field, payment, dan result.
-* **Data JSON** digunakan sebagai penyimpanan lokal aplikasi.
+Contoh:
+
+* `DashboardForm`
+* `FieldForm`
+* `BookingForm`
+* `ScheduleForm`
+* `PaymentForm`
+* `ReportForm`
+
+### AppServices
+
+`AppServices` digunakan sebagai pusat akses service agar setiap form tidak perlu membuat object service secara manual berulang kali.
+
+### Services
+
+Folder `Services` berisi logic bisnis aplikasi.
+
+Contoh:
+
+* `FieldService`
+* `BookingService`
+* `ScheduleService`
+* `PaymentService`
+* `ReportService`
+
+### Models
+
+Folder `Models` berisi class representasi data.
+
+Contoh:
+
+* `Booking`
+* `Field`
+* `Payment`
+* `OperationResult`
+
+### Data
+
+Folder `Data` berisi file JSON sebagai penyimpanan lokal aplikasi.
+
+---
 
 ## Data JSON
 
@@ -214,7 +294,7 @@ Data/bookings.json
 
 Catatan penting:
 
-Saat aplikasi dijalankan, file JSON yang dipakai biasanya berada di folder output:
+Saat aplikasi dijalankan, file JSON yang digunakan biasanya berada di folder output:
 
 ```text
 bin/Debug/net8.0-windows/Data/
@@ -227,11 +307,13 @@ Build Action: Content
 Copy to Output Directory: Copy if newer
 ```
 
+Jangan gunakan `Copy always` secara terus-menerus karena dapat menimpa data terbaru setiap aplikasi dijalankan.
+
+---
+
 ## Teknik Konstruksi yang Digunakan
 
-Beberapa teknik konstruksi perangkat lunak yang digunakan pada project ini:
-
-### 1. Parameterization / Generics
+### 1. Generics
 
 Digunakan pada:
 
@@ -240,37 +322,48 @@ JsonDataStore<T>
 OperationResult<T>
 ```
 
-Tujuannya agar logic penyimpanan dan result dapat digunakan ulang untuk berbagai model.
+Tujuannya agar class dapat digunakan ulang untuk berbagai model.
+
+---
 
 ### 2. Table-driven Construction
 
-Data aplikasi disimpan dalam bentuk tabel sederhana melalui file JSON seperti:
+Data aplikasi disimpan dalam bentuk tabel sederhana melalui file JSON.
 
-```text
-fields.json
-bookings.json
-```
+Contoh:
+
+* `fields.json`
+* `bookings.json`
+
+---
 
 ### 3. Defensive Programming
 
-Digunakan untuk validasi input, seperti:
+Digunakan untuk validasi input dan kondisi program.
+
+Contoh validasi:
 
 * Nama tidak boleh kosong
 * Nomor HP tidak boleh kosong
 * Durasi harus valid
-* Jam booking tidak boleh melewati jam operasional
 * Lapangan harus aktif
 * Jadwal tidak boleh bentrok
+* Booking tidak boleh melewati jam operasional
+* Pembayaran tidak boleh kurang dari total harga
+
+---
 
 ### 4. Design by Contract
 
-Service melakukan validasi pre-condition sebelum memproses data.
+Service melakukan validasi sebelum memproses data.
 
 Contoh:
 
-* Booking hanya bisa dibuat jika lapangan valid
-* Pembayaran hanya bisa dilakukan jika status booking sesuai
+* Booking hanya dibuat jika lapangan valid
+* Pembayaran hanya dilakukan jika status booking sesuai
 * Jadwal hanya tersedia jika tidak bentrok
+
+---
 
 ### 5. Automata / State Machine
 
@@ -283,37 +376,61 @@ Contoh status:
 * `Completed`
 * `Cancelled`
 
+---
+
 ### 6. Code Reuse
 
-Logic dari service digunakan ulang oleh banyak form agar tidak terjadi duplikasi kode.
+Logic service digunakan ulang oleh banyak form agar tidak terjadi duplikasi kode.
 
 Contoh:
 
-* `BookingService` digunakan oleh Booking, Schedule, Payment, dan Report.
-* `FieldService` digunakan oleh Field, Booking, Schedule, dan Report.
-* `ScheduleService` digunakan untuk cek ketersediaan jadwal.
+* `BookingService` digunakan oleh Booking, Schedule, Payment, dan Report
+* `FieldService` digunakan oleh Field, Booking, Schedule, dan Report
+* `ScheduleService` digunakan untuk mengecek ketersediaan jadwal
+* `PaymentService` digunakan untuk memproses pembayaran booking
+
+---
 
 ## Pembagian Tugas
 
 | Anggota                       | Tanggung Jawab                       |
 | ----------------------------- | ------------------------------------ |
-| Rajaa Azharul Hanafi          | Dashboard, integrasi backend, Report |
+| Rajaa Azharul Hanafi          | Dashboard, Integrasi Backend, Report |
 | Faiq Prabaswara Riyana        | Schedule / Cek Jadwal                |
 | Arkananta Odysa               | Booking                              |
 | Muhammad Fitrah Dafa Zulfikar | Payment / Pembayaran                 |
 | Petra Panondang Simangunsong  | Field / Kelola Lapangan              |
 
+---
+
 ## Cara Menjalankan Project
 
 1. Clone repository.
+
+```bash
+git clone <repository-url>
+```
+
 2. Buka project menggunakan Visual Studio 2022.
-3. Buka solution `GuiRentalFutsal.slnx`.
-4. Pastikan project menggunakan .NET 8.
+
+3. Buka solution project.
+
+```text
+GuiRentalFutsal.slnx
+```
+
+4. Pastikan project menggunakan `.NET 8`.
+
 5. Pastikan file JSON pada folder `Data` memiliki properties:
 
-   * Build Action: `Content`
-   * Copy to Output Directory: `Copy if newer`
+```text
+Build Action: Content
+Copy to Output Directory: Copy if newer
+```
+
 6. Jalankan aplikasi dengan tombol `Start`.
+
+---
 
 ## Alur Aplikasi
 
@@ -325,6 +442,8 @@ Dashboard
 ├── Pembayaran
 └── Laporan
 ```
+
+---
 
 ## Workflow Git
 
@@ -369,14 +488,32 @@ Contoh commit message:
 ```bash
 git commit -m "connect booking form to json data services"
 git commit -m "connect schedule form to booking services"
-git commit -m "add report form layout and navigation"
+git commit -m "connect payment form to payment service"
+git commit -m "connect report form to booking data"
+git commit -m "update project readme"
 ```
+
+---
 
 ## Catatan Pengembangan
 
-* Jangan mengubah file di branch `master` secara langsung untuk fitur besar.
+* Jangan mengubah branch `master` secara langsung untuk fitur besar.
 * Setiap form sebaiknya dikerjakan pada branch masing-masing.
-* Jika terjadi conflict pada `Form1.cs`, gabungkan navigasi dashboard dari setiap fitur.
+* Jika terjadi conflict pada `DashboardForm.cs`, gabungkan navigasi dashboard dari setiap fitur.
 * Jangan menggunakan dummy data jika service dan JSON sudah tersedia.
 * Gunakan `AppServices` untuk mengakses service dari form.
 * Pastikan build berhasil sebelum commit dan push.
+* Pastikan file JSON memiliki property `Copy if newer`, bukan `Copy always`, agar data tidak selalu tertimpa saat aplikasi dijalankan.
+
+---
+
+## Status Project
+
+| Fitur           | Status  |
+| --------------- | ------- |
+| Dashboard       | Selesai |
+| Kelola Lapangan | Selesai |
+| Booking         | Selesai |
+| Cek Jadwal      | Selesai |
+| Pembayaran      | Selesai |
+| Laporan         | Selesai |
