@@ -1,41 +1,92 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Globalization;
+using GuiRentalFutsal.Models;
 
 namespace GuiRentalFutsal
 {
     public partial class ReportForm : Form
     {
+        private readonly CultureInfo rupiahCulture = new("id-ID");
+
         public ReportForm()
         {
             InitializeComponent();
             SetupReportGrid();
+            Load += ReportForm_Load;
         }
 
-        private void ReportForm_Load(object sender, EventArgs e)
+        private void ReportForm_Load(object? sender, EventArgs e)
         {
-            dtpPeriodeAwal.Value = DateTime.Today;
-            dtpPeriodeAkhir.Value = DateTime.Today;
-
+            InitializePeriod();
             GenerateReport();
+        }
+
+        private void InitializePeriod()
+        {
+            DateTime today = DateTime.Today;
+            dtpPeriodeAkhir.MaxDate = today;
+
+            var bookings = AppServices.BookingService.GetAllBookings();
+            DateOnly firstBookingDate = bookings.Count > 0
+                ? bookings.Min(b => b.Date)
+                : DateOnly.FromDateTime(today);
+
+            dtpPeriodeAwal.Value = firstBookingDate.ToDateTime(TimeOnly.MinValue);
+            dtpPeriodeAkhir.Value = today;
         }
 
         private void SetupReportGrid()
         {
             dgvReport.AutoGenerateColumns = false;
+            dgvReport.Columns.Clear();
 
-            dgvReport.Columns["colId"].DataPropertyName = "Id";
-            dgvReport.Columns["colTanggal"].DataPropertyName = "Tanggal";
-            dgvReport.Columns["colLapangan"].DataPropertyName = "Lapangan";
-            dgvReport.Columns["colStatus"].DataPropertyName = "Status";
-            dgvReport.Columns["colTotal"].DataPropertyName = "Total";
+            dgvReport.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colId",
+                HeaderText = "ID",
+                DataPropertyName = "Id"
+            });
+            dgvReport.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTanggal",
+                HeaderText = "Tanggal",
+                DataPropertyName = "Tanggal"
+            });
+            dgvReport.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPemesan",
+                HeaderText = "Pemesan",
+                DataPropertyName = "Pemesan"
+            });
+            dgvReport.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colLapangan",
+                HeaderText = "Lapangan",
+                DataPropertyName = "Lapangan"
+            });
+            dgvReport.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colJam",
+                HeaderText = "Jam",
+                DataPropertyName = "Jam"
+            });
+            dgvReport.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colDurasi",
+                HeaderText = "Durasi",
+                DataPropertyName = "Durasi"
+            });
+            dgvReport.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTotal",
+                HeaderText = "Total",
+                DataPropertyName = "Total"
+            });
+            dgvReport.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colStatus",
+                HeaderText = "Status",
+                DataPropertyName = "Status"
+            });
 
             dgvReport.ReadOnly = true;
             dgvReport.AllowUserToAddRows = false;
@@ -56,8 +107,7 @@ namespace GuiRentalFutsal
                     "Periode awal tidak boleh lebih besar dari periode akhir.",
                     "Peringatan",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning
-                );
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -65,36 +115,39 @@ namespace GuiRentalFutsal
                 .Where(b => b.Date >= periodeAwal && b.Date <= periodeAkhir)
                 .ToList();
 
-            int totalBooking = bookings.Count;
-            int bookingPending = bookings.Count(b => b.Status.ToString() == "PendingPayment");
-            int bookingPaid = bookings.Count(b => b.Status.ToString() == "Paid");
-            int bookingCompleted = bookings.Count(b => b.Status.ToString() == "Completed");
-            int bookingCancelled = bookings.Count(b => b.Status.ToString() == "Cancelled");
+            lblTotalBooking.Text = bookings.Count.ToString();
+            lblBookingPending.Text = bookings.Count(b => b.Status == BookingStatus.PendingPayment).ToString();
+            lblBookingPaid.Text = bookings.Count(b => b.Status == BookingStatus.Paid).ToString();
+            lblBookingCompleted.Text = bookings.Count(b => b.Status == BookingStatus.Completed).ToString();
+            lblBookingCancelled.Text = bookings.Count(b => b.Status == BookingStatus.Cancelled).ToString();
 
             decimal totalPendapatan = bookings
-                .Where(b => b.Status.ToString() == "Paid" || b.Status.ToString() == "Completed")
+                .Where(b => b.Status == BookingStatus.Paid || b.Status == BookingStatus.Completed)
                 .Sum(b => b.TotalPrice);
 
-            lblTotalBooking.Text = totalBooking.ToString();
-            lblBookingPending.Text = bookingPending.ToString();
-            lblBookingPaid.Text = bookingPaid.ToString();
-            lblBookingCompleted.Text = bookingCompleted.ToString();
-            lblBookingCancelled.Text = bookingCancelled.ToString();
-            lblTotalPendapatan.Text = "Rp " + totalPendapatan.ToString("N0", new CultureInfo("id-ID"));
+            lblTotalPendapatan.Text = FormatRupiah(totalPendapatan);
 
             var reportData = bookings
                 .Select(b => new
                 {
                     b.Id,
                     Tanggal = b.Date.ToString("dd/MM/yyyy"),
+                    Pemesan = b.CustomerName,
                     Lapangan = AppServices.FieldService.GetById(b.FieldId)?.Name ?? $"Lapangan {b.FieldId}",
-                    Status = b.Status.ToString(),
-                    Total = "Rp " + b.TotalPrice.ToString("N0", new CultureInfo("id-ID"))
+                    Jam = $"{b.StartTime:HH:mm}-{b.EndTime:HH:mm}",
+                    Durasi = $"{b.DurationHours} Jam",
+                    Total = FormatRupiah(b.TotalPrice),
+                    Status = b.Status.ToString()
                 })
                 .ToList();
 
             dgvReport.DataSource = null;
             dgvReport.DataSource = reportData;
+        }
+
+        private string FormatRupiah(decimal amount)
+        {
+            return "Rp " + amount.ToString("N0", rupiahCulture);
         }
 
         private void btnGenerateReport_Click(object sender, EventArgs e)

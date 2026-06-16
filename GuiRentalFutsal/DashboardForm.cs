@@ -1,7 +1,3 @@
-using System;
-using System.Windows.Forms;
-using GuiRentalFutsal.Models;
-
 namespace GuiRentalFutsal
 {
     public partial class DashboardForm : Form
@@ -18,71 +14,53 @@ namespace GuiRentalFutsal
 
         private void btnField_Click(object sender, EventArgs e)
         {
-            // Membuat instance dari FieldForm
-            FieldForm formField = new FieldForm();
-
-            // Sembunyikan Form1 (Menu Utama) sementara
             this.Hide();
-
-            // Buka FieldForm secara modal
-            formField.ShowDialog();
-
-            // Setelah FieldForm ditutup melalui tombol kembali, Form1 muncul lagi
+            using (FieldForm form = new FieldForm())
+            {
+                form.ShowDialog();
+            }
             this.Show();
         }
 
         private void btnBooking_Click(object sender, EventArgs e)
         {
-            // Membuat instance dari BookingForm
-            BookingForm formBooking = new BookingForm();
-
-            // Sembunyikan Form1 (Menu Utama) sementara
             this.Hide();
-
-            // Buka form booking secara modal (harus ditutup dulu baru kode di bawahnya berjalan)
-            formBooking.ShowDialog();
-
-            // Setelah BookingForm ditutup (karena tombol kembali di-klik), Form1 muncul lagi
+            using (BookingForm form = new BookingForm())
+            {
+                form.ShowDialog();
+            }
             this.Show();
         }
 
         private void btnSchedule_Click(object sender, EventArgs e)
         {
-            ScheduleForm scheduleForm = new ScheduleForm();
-
-            // Dashboard disembunyikan sementara
             this.Hide();
-
-            // Membuka form cek jadwal
-            scheduleForm.ShowDialog();
-
-            // Setelah ScheduleForm ditutup, dashboard muncul lagi
+            using (ScheduleForm form = new ScheduleForm())
+            {
+                form.ShowDialog();
+            }
             this.Show();
         }
 
         private void btnPayment_Click(object sender, EventArgs e)
         {
             this.Hide();
-            using (PaymentForm PaymentForm = new PaymentForm())
+            using (PaymentForm form = new PaymentForm())
             {
-                PaymentForm.ShowDialog();
+                form.ShowDialog();
             }
-
             this.Show();
-
         }
 
         private void btnReport_Click(object sender, EventArgs e)
         {
             this.Hide();
 
-            using (ReportForm reportForm = new ReportForm())
+            using (ReportForm form = new ReportForm())
             {
-                reportForm.ShowDialog();
+                form.ShowDialog();
             }
-
             this.Show();
-
         }
 
         private void btnExit_Click(object sender, EventArgs e)

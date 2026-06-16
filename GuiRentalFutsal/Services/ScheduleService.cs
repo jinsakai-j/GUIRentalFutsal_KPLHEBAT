@@ -23,6 +23,13 @@ public class ScheduleService
             return OperationResult<bool>.Fail("Durasi booking harus lebih dari 0.");
         }
 
+        TimeSpan start = startTime.TimeOfDay;
+        TimeSpan end = start.Add(duration);
+        if (start < TimeSpan.FromHours(8) || start > TimeSpan.FromHours(22) || end > TimeSpan.FromHours(23))
+        {
+            return OperationResult<bool>.Fail("Operasional: 08:00 - 23:00. Jam mulai terakhir 22:00.");
+        }
+
         TimeSlot requestedSlot = new(startTime, duration);
         bool hasConflict = _bookingStore.Load()
             .Where(booking => booking.FieldId == fieldId && booking.Status != BookingStatus.Cancelled)
@@ -35,9 +42,9 @@ public class ScheduleService
 
     public virtual OperationResult<bool> IsAvailable(int fieldId, DateOnly date, TimeOnly startTime, int durationHours)
     {
-        if (durationHours <= 0)
+        if (durationHours <= 0 || durationHours > 15)
         {
-            return OperationResult<bool>.Fail("Durasi booking harus lebih dari 0.");
+            return OperationResult<bool>.Fail("Durasi booking harus 1-15 jam.");
         }
 
         DateTime slotStart = date.ToDateTime(startTime);

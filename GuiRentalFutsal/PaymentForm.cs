@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Globalization;
+using GuiRentalFutsal.Models;
 
 namespace GuiRentalFutsal
 {
     public partial class PaymentForm : Form
     {
+        private readonly CultureInfo rupiahCulture = new("id-ID");
+        private Booking? selectedBooking;
+
         public PaymentForm()
         {
             InitializeComponent();
@@ -19,111 +15,238 @@ namespace GuiRentalFutsal
 
         private void JumlahBayarBtn_TextChanged(object sender, EventArgs e)
         {
-
         }
 
         private void PaymentForm_Load(object sender, EventArgs e)
         {
+            SetupPaymentForm();
+            SetupPaymentGrid();
+            LoadPendingPayments();
+            ClearDetail();
+        }
+
+        private void SetupPaymentForm()
+        {
+            MetodeBayarCmb.Items.Clear();
             MetodeBayarCmb.Items.Add("Cash");
             MetodeBayarCmb.Items.Add("Transfer Bank");
             MetodeBayarCmb.Items.Add("QRIS");
-
+            MetodeBayarCmb.DropDownStyle = ComboBoxStyle.DropDownList;
             MetodeBayarCmb.SelectedIndex = 0;
 
-            RiwayatPembayaranDgv.ColumnCount = 7;
+            IdBookingTxt.ReadOnly = false;
+            NamaPemesanTxt.ReadOnly = true;
+            LapanganTxt.ReadOnly = true;
+            TanggalJamTxt.ReadOnly = true;
+            TotalTagihanTxt.ReadOnly = true;
+            StatusBookingTxt.ReadOnly = true;
+        }
 
-            RiwayatPembayaranDgv.Columns[0].Name = "ID Booking";
-            RiwayatPembayaranDgv.Columns[1].Name = "Nama Pemesan";
-            RiwayatPembayaranDgv.Columns[2].Name = "Total Tagihan";
-            RiwayatPembayaranDgv.Columns[3].Name = "Jumlah Bayar";
-            RiwayatPembayaranDgv.Columns[4].Name = "Metode Bayar";
-            RiwayatPembayaranDgv.Columns[5].Name = "Tanggal";
-            RiwayatPembayaranDgv.Columns[6].Name = "Status";
+        private void SetupPaymentGrid()
+        {
+            RiwayatPembayaranDgv.AutoGenerateColumns = false;
+            RiwayatPembayaranDgv.Columns.Clear();
+
+            RiwayatPembayaranDgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colId",
+                HeaderText = "ID Booking",
+                DataPropertyName = "Id"
+            });
+            RiwayatPembayaranDgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colPemesan",
+                HeaderText = "Nama Pemesan",
+                DataPropertyName = "Pemesan"
+            });
+            RiwayatPembayaranDgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colNoHp",
+                HeaderText = "No HP",
+                DataPropertyName = "NoHp"
+            });
+            RiwayatPembayaranDgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colLapangan",
+                HeaderText = "Lapangan",
+                DataPropertyName = "Lapangan"
+            });
+            RiwayatPembayaranDgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTanggal",
+                HeaderText = "Tanggal",
+                DataPropertyName = "Tanggal"
+            });
+            RiwayatPembayaranDgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colJam",
+                HeaderText = "Jam",
+                DataPropertyName = "Jam"
+            });
+            RiwayatPembayaranDgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colTotal",
+                HeaderText = "Total Harga",
+                DataPropertyName = "Total"
+            });
+            RiwayatPembayaranDgv.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "colStatus",
+                HeaderText = "Status",
+                DataPropertyName = "Status"
+            });
+
+            RiwayatPembayaranDgv.ReadOnly = true;
+            RiwayatPembayaranDgv.AllowUserToAddRows = false;
+            RiwayatPembayaranDgv.AllowUserToDeleteRows = false;
+            RiwayatPembayaranDgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            RiwayatPembayaranDgv.MultiSelect = false;
+            RiwayatPembayaranDgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            RiwayatPembayaranDgv.CellClick += RiwayatPembayaranDgv_CellClick;
+        }
+
+        private void LoadPendingPayments()
+        {
+            var data = AppServices.BookingService.GetAllBookings()
+                .Where(b => b.Status == BookingStatus.PendingPayment)
+                .Select(b => new
+                {
+                    b.Id,
+                    Pemesan = b.CustomerName,
+                    NoHp = b.CustomerPhone,
+                    Lapangan = GetFieldName(b.FieldId),
+                    Tanggal = b.Date.ToString("dd/MM/yyyy"),
+                    Jam = $"{b.StartTime:HH:mm}-{b.EndTime:HH:mm}",
+                    Total = FormatRupiah(b.TotalPrice),
+                    Status = b.Status.ToString()
+                })
+                .ToList();
+
+            RiwayatPembayaranDgv.DataSource = null;
+            RiwayatPembayaranDgv.DataSource = data;
         }
 
         private void CariBtn_Click(object sender, EventArgs e)
         {
-            if (IdBookingTxt.Text == "BK001")
+            if (!int.TryParse(IdBookingTxt.Text.Trim(), out int bookingId))
             {
-                NamaPemesanTxt.Text = "Muhammad Fitrah";
-                LapanganTxt.Text = "Lapangan A";
-                TanggalJamTxt.Text = "15/06/2026 19:00";
-                TotalTagihanTxt.Text = "150000";
-                StatusBookingTxt.Text = "Belum Lunas";
+                MessageBox.Show("ID booking harus berupa angka.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            else
+
+            Booking? booking = AppServices.BookingService.GetAllBookings()
+                .FirstOrDefault(b => b.Id == bookingId && b.Status == BookingStatus.PendingPayment);
+
+            if (booking is null)
             {
-                MessageBox.Show("Booking tidak ditemukan!");
+                MessageBox.Show("Booking pending payment tidak ditemukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            ShowBookingDetail(booking);
         }
 
         private void KonfirmasiPembayaranBtn_Click(object sender, EventArgs e)
         {
-            decimal totalTagihan;
-            decimal jumlahBayar;
-
-            if (!decimal.TryParse(TotalTagihanTxt.Text, out totalTagihan))
+            if (selectedBooking is null)
             {
-                MessageBox.Show("Total tagihan tidak valid!");
+                MessageBox.Show("Pilih booking terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (!decimal.TryParse(JumlahBayarTxt.Text, out jumlahBayar))
+            if (!decimal.TryParse(JumlahBayarTxt.Text.Trim(), out decimal jumlahBayar))
             {
-                MessageBox.Show("Jumlah bayar tidak valid!");
+                MessageBox.Show("Jumlah pembayaran wajib angka.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (jumlahBayar < totalTagihan)
+            if (jumlahBayar < selectedBooking.TotalPrice)
             {
-                MessageBox.Show("Jumlah pembayaran kurang!");
+                MessageBox.Show("Jumlah pembayaran tidak boleh kurang dari total harga.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            StatusBookingTxt.Text = "Lunas";
+            var result = AppServices.PaymentService.PayBooking(selectedBooking.Id, jumlahBayar);
+            MessageBox.Show(result.Message);
 
-            RiwayatPembayaranDgv.Rows.Add(
-                IdBookingTxt.Text,
-                NamaPemesanTxt.Text,
-                TotalTagihanTxt.Text,
-                JumlahBayarTxt.Text,
-                MetodeBayarCmb.Text,
-                DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                "Lunas"
-            );
-
-            MessageBox.Show("Pembayaran berhasil!");
+            if (result.Success)
+            {
+                LoadPendingPayments();
+                ClearDetail();
+            }
         }
 
         private void BatalPembayaranBtn_Click(object sender, EventArgs e)
         {
-            DialogResult hasil = MessageBox.Show(
-               "Yakin ingin membatalkan pembayaran?",
-               "Konfirmasi",
-               MessageBoxButtons.YesNo,
-               MessageBoxIcon.Question);
+            ClearDetail();
+        }
 
-            if (hasil == DialogResult.Yes)
+        private void KembaliBtn_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void RiwayatPembayaranDgv_CellClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
             {
-                StatusBookingTxt.Text = "Dibatalkan";
-
-                RiwayatPembayaranDgv.Rows.Add(
-                    IdBookingTxt.Text,
-                    NamaPemesanTxt.Text,
-                    TotalTagihanTxt.Text,
-                    "-",
-                    "-",
-                    DateTime.Now.ToString("dd/MM/yyyy HH:mm"),
-                    "Dibatalkan"
-                );
-
-                MessageBox.Show("Pembayaran dibatalkan.");
+                return;
             }
+
+            object? idValue = RiwayatPembayaranDgv.Rows[e.RowIndex].Cells["colId"].Value;
+            if (idValue is null || !int.TryParse(idValue.ToString(), out int bookingId))
+            {
+                return;
+            }
+
+            Booking? booking = AppServices.BookingService.GetAllBookings()
+                .FirstOrDefault(b => b.Id == bookingId && b.Status == BookingStatus.PendingPayment);
+
+            if (booking is not null)
+            {
+                ShowBookingDetail(booking);
+            }
+        }
+
+        private void ShowBookingDetail(Booking booking)
+        {
+            selectedBooking = booking;
+
+            IdBookingTxt.Text = booking.Id.ToString();
+            NamaPemesanTxt.Text = booking.CustomerName;
+            LapanganTxt.Text = $"{GetFieldName(booking.FieldId)} | HP: {booking.CustomerPhone}";
+            TanggalJamTxt.Text = $"{booking.Date:dd/MM/yyyy} {booking.StartTime:HH:mm}-{booking.EndTime:HH:mm}";
+            TotalTagihanTxt.Text = booking.TotalPrice.ToString("0");
+            StatusBookingTxt.Text = booking.Status.ToString();
+            JumlahBayarTxt.Clear();
+            JumlahBayarTxt.Focus();
+        }
+
+        private void ClearDetail()
+        {
+            selectedBooking = null;
+            IdBookingTxt.Clear();
+            NamaPemesanTxt.Clear();
+            LapanganTxt.Clear();
+            TanggalJamTxt.Clear();
+            TotalTagihanTxt.Clear();
+            StatusBookingTxt.Clear();
+            JumlahBayarTxt.Clear();
+            RiwayatPembayaranDgv.ClearSelection();
+        }
+
+        private static string GetFieldName(int fieldId)
+        {
+            return AppServices.FieldService.GetById(fieldId)?.Name ?? $"Lapangan {fieldId}";
+        }
+
+        private string FormatRupiah(decimal amount)
+        {
+            return amount.ToString("C0", rupiahCulture);
         }
 
         private void label1_Click(object sender, EventArgs e)
         {
-
         }
     }
 }
