@@ -5,6 +5,8 @@ namespace GuiRentalFutsal
 {
     public partial class PaymentForm : Form
     {
+        private const decimal MaxCashPayment = 5_000_000m;
+
         private readonly CultureInfo rupiahCulture = new("id-ID");
         private Booking? selectedBooking;
 
@@ -33,6 +35,7 @@ namespace GuiRentalFutsal
             MetodeBayarCmb.Items.Add("QRIS");
             MetodeBayarCmb.DropDownStyle = ComboBoxStyle.DropDownList;
             MetodeBayarCmb.SelectedIndex = 0;
+            MetodeBayarCmb.SelectedIndexChanged += MetodeBayarCmb_SelectedIndexChanged;
 
             IdBookingTxt.ReadOnly = false;
             NamaPemesanTxt.ReadOnly = true;
@@ -135,11 +138,20 @@ namespace GuiRentalFutsal
             }
 
             Booking? booking = AppServices.BookingService.GetAllBookings()
-                .FirstOrDefault(b => b.Id == bookingId && b.Status == BookingStatus.PendingPayment);
+                .FirstOrDefault(b => b.Id == bookingId);
 
             if (booking is null)
             {
-                MessageBox.Show("Booking pending payment tidak ditemukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Booking tidak ditemukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (booking.Status != BookingStatus.PendingPayment)
+            {
+                MessageBox.Show($"Booking dengan status {booking.Status} tidak bisa dibayar.",
+                    "Peringatan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
@@ -157,18 +169,47 @@ namespace GuiRentalFutsal
                 return;
             }
 
-            if (!decimal.TryParse(JumlahBayarTxt.Text.Trim(), out decimal jumlahBayar))
+            if (selectedBooking.Status != BookingStatus.PendingPayment)
             {
-                MessageBox.Show("Jumlah pembayaran wajib angka.",
+                MessageBox.Show($"Booking dengan status {selectedBooking.Status} tidak bisa dibayar.",
                     "Peringatan",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
                 return;
             }
 
-            if (jumlahBayar < selectedBooking.TotalPrice)
+            string metodeBayar = MetodeBayarCmb.SelectedItem?.ToString() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(metodeBayar))
             {
-                MessageBox.Show("Jumlah pembayaran tidak boleh kurang dari total harga.",
+                MessageBox.Show("Metode pembayaran wajib dipilih.",
+                    "Peringatan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            string jumlahBayarText = JumlahBayarTxt.Text.Trim();
+            if (string.IsNullOrWhiteSpace(jumlahBayarText))
+            {
+                MessageBox.Show("Nominal pembayaran wajib diisi.",
+                    "Peringatan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!TryParseRupiah(jumlahBayarText, out decimal jumlahBayar))
+            {
+                MessageBox.Show("Nominal pembayaran harus angka.",
+                    "Peringatan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (jumlahBayar <= 0)
+            {
+                MessageBox.Show("Nominal pembayaran harus lebih dari 0.",
                     "Peringatan",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
@@ -176,6 +217,52 @@ namespace GuiRentalFutsal
             }
 
             decimal kembalian = jumlahBayar - selectedBooking.TotalPrice;
+            string successMessage = "Pembayaran berhasil.";
+
+            if (metodeBayar == "Cash")
+            {
+                if (jumlahBayar > MaxCashPayment)
+                {
+                    MessageBox.Show($"Pembayaran cash maksimal {FormatRupiah(MaxCashPayment)}.",
+                        "Peringatan",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (jumlahBayar < selectedBooking.TotalPrice)
+                {
+                    MessageBox.Show("Uang pembayaran kurang.",
+                        "Peringatan",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (kembalian > 0)
+                {
+                    successMessage = $"Pembayaran berhasil. Kembalian: {FormatRupiah(kembalian)}";
+                }
+            }
+            else if (metodeBayar == "Transfer Bank" || metodeBayar == "QRIS")
+            {
+                if (jumlahBayar != selectedBooking.TotalPrice)
+                {
+                    MessageBox.Show("Pembayaran QRIS/Transfer Bank harus sesuai nominal total harga.",
+                        "Peringatan",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Metode pembayaran tidak valid.",
+                    "Peringatan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
 
             var result = AppServices.PaymentService.PayBooking(
                 selectedBooking.Id,
@@ -184,25 +271,11 @@ namespace GuiRentalFutsal
 
             if (result.Success)
             {
-                if (kembalian > 0)
-                {
-                    MessageBox.Show(
-                        $"Pembayaran berhasil!\n\n" +
-                        $"Total Tagihan : {FormatRupiah(selectedBooking.TotalPrice)}\n" +
-                        $"Jumlah Bayar : {FormatRupiah(jumlahBayar)}\n" +
-                        $"Kembalian : {FormatRupiah(kembalian)}",
-                        "Pembayaran Berhasil",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show(
-                        "Pembayaran berhasil!",
-                        "Pembayaran Berhasil",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                }
+                MessageBox.Show(
+                    successMessage,
+                    "Pembayaran Berhasil",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
 
                 LoadPendingPayments();
                 ClearDetail();
@@ -257,9 +330,10 @@ namespace GuiRentalFutsal
             NamaPemesanTxt.Text = booking.CustomerName;
             LapanganTxt.Text = $"{GetFieldName(booking.FieldId)} | HP: {booking.CustomerPhone}";
             TanggalJamTxt.Text = $"{booking.Date:dd/MM/yyyy} {booking.StartTime:HH:mm}-{booking.EndTime:HH:mm}";
-            TotalTagihanTxt.Text = booking.TotalPrice.ToString("0");
+            TotalTagihanTxt.Text = FormatRupiah(booking.TotalPrice);
             StatusBookingTxt.Text = booking.Status.ToString();
             JumlahBayarTxt.Clear();
+            FillExactPaymentAmountForNonCash();
             JumlahBayarTxt.Focus();
         }
 
@@ -276,9 +350,41 @@ namespace GuiRentalFutsal
             RiwayatPembayaranDgv.ClearSelection();
         }
 
+        private void MetodeBayarCmb_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            FillExactPaymentAmountForNonCash();
+        }
+
+        private void FillExactPaymentAmountForNonCash()
+        {
+            string metodeBayar = MetodeBayarCmb.SelectedItem?.ToString() ?? string.Empty;
+            if (selectedBooking is null)
+            {
+                return;
+            }
+
+            if (metodeBayar == "Transfer Bank" || metodeBayar == "QRIS")
+            {
+                JumlahBayarTxt.Text = selectedBooking.TotalPrice.ToString("0", rupiahCulture);
+            }
+            else if (metodeBayar == "Cash")
+            {
+                JumlahBayarTxt.Clear();
+            }
+        }
+
         private static string GetFieldName(int fieldId)
         {
             return AppServices.FieldService.GetById(fieldId)?.Name ?? $"Lapangan {fieldId}";
+        }
+
+        private bool TryParseRupiah(string text, out decimal amount)
+        {
+            return decimal.TryParse(
+                text,
+                NumberStyles.Number | NumberStyles.AllowCurrencySymbol,
+                rupiahCulture,
+                out amount);
         }
 
         private string FormatRupiah(decimal amount)
