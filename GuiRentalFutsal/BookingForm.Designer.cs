@@ -145,6 +145,7 @@
             // 
             // tNama
             // 
+            tNama.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tNama.Location = new Point(213, 23);
             tNama.Margin = new Padding(2);
             tNama.Name = "tNama";
@@ -154,6 +155,7 @@
             // 
             // tNoHp
             // 
+            tNoHp.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             tNoHp.Location = new Point(213, 45);
             tNoHp.Margin = new Padding(2);
             tNoHp.Name = "tNoHp";
@@ -255,6 +257,7 @@
             // 
             // pilihTanggal
             // 
+            pilihTanggal.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pilihTanggal.Location = new Point(213, 92);
             pilihTanggal.Margin = new Padding(2);
             pilihTanggal.Name = "pilihTanggal";
@@ -264,6 +267,7 @@
             // 
             // cekJadwal
             // 
+            cekJadwal.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             cekJadwal.Location = new Point(515, 26);
             cekJadwal.Margin = new Padding(2);
             cekJadwal.Name = "cekJadwal";
@@ -275,6 +279,7 @@
             // 
             // buatBooking
             // 
+            buatBooking.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             buatBooking.Location = new Point(515, 65);
             buatBooking.Margin = new Padding(2);
             buatBooking.Name = "buatBooking";
@@ -286,6 +291,7 @@
             // 
             // reset
             // 
+            reset.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             reset.Location = new Point(515, 95);
             reset.Margin = new Padding(2);
             reset.Name = "reset";
@@ -297,6 +303,7 @@
             // 
             // keluar
             // 
+            keluar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             keluar.Location = new Point(515, 132);
             keluar.Margin = new Padding(2);
             keluar.Name = "keluar";
@@ -308,6 +315,7 @@
             // 
             // cmbLapangan
             // 
+            cmbLapangan.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cmbLapangan.FormattingEnabled = true;
             cmbLapangan.Location = new Point(213, 69);
             cmbLapangan.Margin = new Padding(2);
@@ -318,6 +326,7 @@
             // 
             // btnRefreshFields
             // 
+            btnRefreshFields.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnRefreshFields.Location = new Point(515, 161);
             btnRefreshFields.Name = "btnRefreshFields";
             btnRefreshFields.Size = new Size(90, 23);
@@ -328,6 +337,7 @@
             // 
             // cmbJamMulai
             // 
+            cmbJamMulai.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cmbJamMulai.FormattingEnabled = true;
             cmbJamMulai.Location = new Point(213, 115);
             cmbJamMulai.Name = "cmbJamMulai";
@@ -336,6 +346,7 @@
             // 
             // cmbDurasi
             // 
+            cmbDurasi.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             cmbDurasi.FormattingEnabled = true;
             cmbDurasi.Location = new Point(213, 137);
             cmbDurasi.Name = "cmbDurasi";
@@ -370,8 +381,12 @@
             Controls.Add(lapangan);
             Controls.Add(NoHp);
             Controls.Add(Nama);
+            FormBorderStyle = FormBorderStyle.Sizable;
             Margin = new Padding(2);
+            MaximizeBox = true;
+            MinimumSize = new Size(700, 420);
             Name = "BookingForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "BookingForm";
             Load += BookingForm_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();

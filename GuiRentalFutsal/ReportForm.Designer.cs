@@ -62,6 +62,7 @@
             // 
             // lblTitle
             // 
+            lblTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblTitle.Location = new Point(30, 20);
             lblTitle.Name = "lblTitle";
@@ -128,6 +129,7 @@
             // 
             // gbRingkasan
             // 
+            gbRingkasan.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             gbRingkasan.Controls.Add(lblTotalBookingText);
             gbRingkasan.Controls.Add(lblTotalBooking);
             gbRingkasan.Controls.Add(lblBookingPendingText);
@@ -269,6 +271,7 @@
             // 
             // lblDetailBooking
             // 
+            lblDetailBooking.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             lblDetailBooking.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblDetailBooking.Location = new Point(30, 369);
             lblDetailBooking.Name = "lblDetailBooking";
@@ -281,6 +284,7 @@
             // 
             dgvReport.AllowUserToAddRows = false;
             dgvReport.AllowUserToDeleteRows = false;
+            dgvReport.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvReport.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvReport.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvReport.Columns.AddRange(new DataGridViewColumn[] { colId, colTanggal, colLapangan, colStatus, colTotal });
@@ -325,6 +329,7 @@
             // 
             // btnKembali
             // 
+            btnKembali.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnKembali.Location = new Point(30, 596);
             btnKembali.Name = "btnKembali";
             btnKembali.Size = new Size(100, 34);
@@ -349,8 +354,9 @@
             Controls.Add(dtpPeriodeAwal);
             Controls.Add(lblPeriodeAwal);
             Controls.Add(lblTitle);
-            FormBorderStyle = FormBorderStyle.FixedSingle;
-            MaximizeBox = false;
+            FormBorderStyle = FormBorderStyle.Sizable;
+            MaximizeBox = true;
+            MinimumSize = new Size(760, 600);
             Name = "ReportForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "ReportForm";

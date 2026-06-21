@@ -138,6 +138,8 @@
             // 
             // RiwayatPembayaranDgv
             // 
+            RiwayatPembayaranDgv.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            RiwayatPembayaranDgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             RiwayatPembayaranDgv.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             RiwayatPembayaranDgv.Location = new Point(12, 354);
             RiwayatPembayaranDgv.Name = "RiwayatPembayaranDgv";
@@ -146,6 +148,7 @@
             // 
             // KonfirmasiPembayaranBtn
             // 
+            KonfirmasiPembayaranBtn.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             KonfirmasiPembayaranBtn.Location = new Point(12, 284);
             KonfirmasiPembayaranBtn.Name = "KonfirmasiPembayaranBtn";
             KonfirmasiPembayaranBtn.Size = new Size(281, 23);
@@ -156,6 +159,7 @@
             // 
             // BatalPembayaranBtn
             // 
+            BatalPembayaranBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             BatalPembayaranBtn.Location = new Point(346, 284);
             BatalPembayaranBtn.Name = "BatalPembayaranBtn";
             BatalPembayaranBtn.Size = new Size(281, 23);
@@ -166,6 +170,7 @@
             // 
             // JumlahBayarTxt
             // 
+            JumlahBayarTxt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             JumlahBayarTxt.Location = new Point(105, 224);
             JumlahBayarTxt.Name = "JumlahBayarTxt";
             JumlahBayarTxt.Size = new Size(339, 23);
@@ -174,6 +179,7 @@
             // 
             // StatusBookingTxt
             // 
+            StatusBookingTxt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             StatusBookingTxt.Location = new Point(105, 195);
             StatusBookingTxt.Name = "StatusBookingTxt";
             StatusBookingTxt.Size = new Size(339, 23);
@@ -181,6 +187,7 @@
             // 
             // TotalTagihanTxt
             // 
+            TotalTagihanTxt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             TotalTagihanTxt.Location = new Point(105, 164);
             TotalTagihanTxt.Name = "TotalTagihanTxt";
             TotalTagihanTxt.Size = new Size(339, 23);
@@ -188,6 +195,7 @@
             // 
             // TanggalJamTxt
             // 
+            TanggalJamTxt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             TanggalJamTxt.Location = new Point(105, 131);
             TanggalJamTxt.Name = "TanggalJamTxt";
             TanggalJamTxt.Size = new Size(339, 23);
@@ -195,6 +203,7 @@
             // 
             // LapanganTxt
             // 
+            LapanganTxt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             LapanganTxt.Location = new Point(105, 103);
             LapanganTxt.Name = "LapanganTxt";
             LapanganTxt.Size = new Size(339, 23);
@@ -202,6 +211,7 @@
             // 
             // NamaPemesanTxt
             // 
+            NamaPemesanTxt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             NamaPemesanTxt.Location = new Point(105, 71);
             NamaPemesanTxt.Name = "NamaPemesanTxt";
             NamaPemesanTxt.Size = new Size(339, 23);
@@ -209,6 +219,7 @@
             // 
             // IdBookingTxt
             // 
+            IdBookingTxt.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             IdBookingTxt.Location = new Point(105, 42);
             IdBookingTxt.Name = "IdBookingTxt";
             IdBookingTxt.Size = new Size(339, 23);
@@ -216,6 +227,7 @@
             // 
             // MetodeBayarCmb
             // 
+            MetodeBayarCmb.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             MetodeBayarCmb.FormattingEnabled = true;
             MetodeBayarCmb.Location = new Point(105, 252);
             MetodeBayarCmb.Name = "MetodeBayarCmb";
@@ -224,6 +236,7 @@
             // 
             // CariBtn
             // 
+            CariBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             CariBtn.Location = new Point(462, 42);
             CariBtn.Name = "CariBtn";
             CariBtn.Size = new Size(165, 23);
@@ -234,6 +247,7 @@
             // 
             // label1
             // 
+            label1.Anchor = AnchorStyles.Top;
             label1.AutoSize = true;
             label1.Location = new Point(262, 17);
             label1.Name = "label1";
@@ -244,6 +258,7 @@
             // 
             // KembaliBtn
             // 
+            KembaliBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             KembaliBtn.Location = new Point(653, 42);
             KembaliBtn.Name = "KembaliBtn";
             KembaliBtn.Size = new Size(120, 23);
@@ -280,7 +295,11 @@
             Controls.Add(Lapangan);
             Controls.Add(NamaPemesan);
             Controls.Add(IdBooking);
+            FormBorderStyle = FormBorderStyle.Sizable;
+            MaximizeBox = true;
+            MinimumSize = new Size(760, 500);
             Name = "PaymentForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "PaymentForm";
             Load += PaymentForm_Load;
             ((System.ComponentModel.ISupportInitialize)RiwayatPembayaranDgv).EndInit();

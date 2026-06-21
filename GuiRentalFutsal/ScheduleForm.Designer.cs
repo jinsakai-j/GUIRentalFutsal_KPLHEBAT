@@ -112,6 +112,7 @@ namespace GuiRentalFutsal
             // 
             // lblStatus
             // 
+            lblStatus.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             lblStatus.BorderStyle = BorderStyle.FixedSingle;
             lblStatus.Location = new Point(12, 319);
             lblStatus.Name = "lblStatus";
@@ -124,6 +125,7 @@ namespace GuiRentalFutsal
             // 
             dgvSchedule.AllowUserToAddRows = false;
             dgvSchedule.AllowUserToDeleteRows = false;
+            dgvSchedule.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvSchedule.AutoGenerateColumns = false;
             dgvSchedule.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvSchedule.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -181,6 +183,7 @@ namespace GuiRentalFutsal
             // 
             // btnKembali
             // 
+            btnKembali.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             btnKembali.Location = new Point(10, 407);
             btnKembali.Name = "btnKembali";
             btnKembali.Size = new Size(94, 29);
@@ -236,6 +239,7 @@ namespace GuiRentalFutsal
             // 
             // lblJadwal
             // 
+            lblJadwal.Anchor = AnchorStyles.Top;
             lblJadwal.AutoSize = true;
             lblJadwal.Location = new Point(596, 9);
             lblJadwal.Name = "lblJadwal";
@@ -263,6 +267,9 @@ namespace GuiRentalFutsal
             Controls.Add(cmbJamMulai);
             Controls.Add(dtpTanggal);
             Controls.Add(cmbLapangan);
+            FormBorderStyle = FormBorderStyle.Sizable;
+            MaximizeBox = true;
+            MinimumSize = new Size(900, 430);
             Name = "ScheduleForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Cek Jadwal Lapangan";

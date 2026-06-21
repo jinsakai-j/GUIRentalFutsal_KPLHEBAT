@@ -105,6 +105,7 @@
             // 
             // bttn_Tambah
             // 
+            bttn_Tambah.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             bttn_Tambah.Location = new Point(74, 232);
             bttn_Tambah.Name = "bttn_Tambah";
             bttn_Tambah.Size = new Size(94, 29);
@@ -115,6 +116,7 @@
             // 
             // bttn_Update
             // 
+            bttn_Update.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             bttn_Update.Location = new Point(201, 232);
             bttn_Update.Name = "bttn_Update";
             bttn_Update.Size = new Size(94, 29);
@@ -125,6 +127,7 @@
             // 
             // bttn_Hapus
             // 
+            bttn_Hapus.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             bttn_Hapus.Location = new Point(335, 232);
             bttn_Hapus.Name = "bttn_Hapus";
             bttn_Hapus.Size = new Size(94, 29);
@@ -135,6 +138,7 @@
             // 
             // bttn_Reset
             // 
+            bttn_Reset.Anchor = AnchorStyles.Top | AnchorStyles.Left;
             bttn_Reset.Location = new Point(464, 232);
             bttn_Reset.Name = "bttn_Reset";
             bttn_Reset.Size = new Size(94, 29);
@@ -153,6 +157,7 @@
             // 
             // Txt_NamaLapangan
             // 
+            Txt_NamaLapangan.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Txt_NamaLapangan.Location = new Point(272, 106);
             Txt_NamaLapangan.Name = "Txt_NamaLapangan";
             Txt_NamaLapangan.Size = new Size(167, 27);
@@ -293,7 +298,11 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
+            FormBorderStyle = FormBorderStyle.Sizable;
+            MaximizeBox = true;
+            MinimumSize = new Size(720, 520);
             Name = "FieldForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "FieldForm";
             Load += FieldForm_Load;
             ((System.ComponentModel.ISupportInitialize)GridView_Lapangan).EndInit();
