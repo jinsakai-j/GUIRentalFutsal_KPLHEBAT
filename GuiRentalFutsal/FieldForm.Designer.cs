@@ -157,7 +157,6 @@
             // 
             // Txt_NamaLapangan
             // 
-            Txt_NamaLapangan.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Txt_NamaLapangan.Location = new Point(272, 106);
             Txt_NamaLapangan.Name = "Txt_NamaLapangan";
             Txt_NamaLapangan.Size = new Size(167, 27);

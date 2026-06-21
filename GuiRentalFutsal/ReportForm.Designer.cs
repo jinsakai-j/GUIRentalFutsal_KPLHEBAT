@@ -62,7 +62,7 @@
             // 
             // lblTitle
             // 
-            lblTitle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblTitle.Anchor = AnchorStyles.Top;
             lblTitle.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
             lblTitle.Location = new Point(30, 20);
             lblTitle.Name = "lblTitle";
@@ -73,6 +73,7 @@
             // 
             // lblPeriodeAwal
             // 
+            lblPeriodeAwal.Anchor = AnchorStyles.Top;
             lblPeriodeAwal.Location = new Point(145, 77);
             lblPeriodeAwal.Name = "lblPeriodeAwal";
             lblPeriodeAwal.Size = new Size(100, 25);
@@ -82,6 +83,7 @@
             // 
             // dtpPeriodeAwal
             // 
+            dtpPeriodeAwal.Anchor = AnchorStyles.Top;
             dtpPeriodeAwal.Format = DateTimePickerFormat.Short;
             dtpPeriodeAwal.Location = new Point(255, 77);
             dtpPeriodeAwal.Name = "dtpPeriodeAwal";
@@ -91,6 +93,7 @@
             // 
             // lblPeriodeAkhir
             // 
+            lblPeriodeAkhir.Anchor = AnchorStyles.Top;
             lblPeriodeAkhir.Location = new Point(430, 77);
             lblPeriodeAkhir.Name = "lblPeriodeAkhir";
             lblPeriodeAkhir.Size = new Size(105, 25);
@@ -100,6 +103,7 @@
             // 
             // dtpPeriodeAkhir
             // 
+            dtpPeriodeAkhir.Anchor = AnchorStyles.Top;
             dtpPeriodeAkhir.Format = DateTimePickerFormat.Short;
             dtpPeriodeAkhir.Location = new Point(545, 77);
             dtpPeriodeAkhir.Name = "dtpPeriodeAkhir";
@@ -109,6 +113,7 @@
             // 
             // btnGenerateReport
             // 
+            btnGenerateReport.Anchor = AnchorStyles.Top;
             btnGenerateReport.Location = new Point(300, 118);
             btnGenerateReport.Name = "btnGenerateReport";
             btnGenerateReport.Size = new Size(150, 34);
@@ -119,6 +124,7 @@
             // 
             // btnRefresh
             // 
+            btnRefresh.Anchor = AnchorStyles.Top;
             btnRefresh.Location = new Point(465, 118);
             btnRefresh.Name = "btnRefresh";
             btnRefresh.Size = new Size(100, 34);
@@ -129,7 +135,7 @@
             // 
             // gbRingkasan
             // 
-            gbRingkasan.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            gbRingkasan.Anchor = AnchorStyles.Top;
             gbRingkasan.Controls.Add(lblTotalBookingText);
             gbRingkasan.Controls.Add(lblTotalBooking);
             gbRingkasan.Controls.Add(lblBookingPendingText);
@@ -271,7 +277,7 @@
             // 
             // lblDetailBooking
             // 
-            lblDetailBooking.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            lblDetailBooking.Anchor = AnchorStyles.Top;
             lblDetailBooking.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblDetailBooking.Location = new Point(30, 369);
             lblDetailBooking.Name = "lblDetailBooking";
@@ -284,7 +290,7 @@
             // 
             dgvReport.AllowUserToAddRows = false;
             dgvReport.AllowUserToDeleteRows = false;
-            dgvReport.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvReport.Anchor = AnchorStyles.Top | AnchorStyles.Bottom;
             dgvReport.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvReport.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvReport.Columns.AddRange(new DataGridViewColumn[] { colId, colTanggal, colLapangan, colStatus, colTotal });
@@ -329,7 +335,7 @@
             // 
             // btnKembali
             // 
-            btnKembali.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnKembali.Anchor = AnchorStyles.Bottom;
             btnKembali.Location = new Point(30, 596);
             btnKembali.Name = "btnKembali";
             btnKembali.Size = new Size(100, 34);
