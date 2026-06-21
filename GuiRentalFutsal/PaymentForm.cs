@@ -150,29 +150,70 @@ namespace GuiRentalFutsal
         {
             if (selectedBooking is null)
             {
-                MessageBox.Show("Pilih booking terlebih dahulu.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Pilih booking terlebih dahulu.",
+                    "Peringatan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (!decimal.TryParse(JumlahBayarTxt.Text.Trim(), out decimal jumlahBayar))
             {
-                MessageBox.Show("Jumlah pembayaran wajib angka.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Jumlah pembayaran wajib angka.",
+                    "Peringatan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
             if (jumlahBayar < selectedBooking.TotalPrice)
             {
-                MessageBox.Show("Jumlah pembayaran tidak boleh kurang dari total harga.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Jumlah pembayaran tidak boleh kurang dari total harga.",
+                    "Peringatan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
                 return;
             }
 
-            var result = AppServices.PaymentService.PayBooking(selectedBooking.Id, jumlahBayar);
-            MessageBox.Show(result.Message);
+            decimal kembalian = jumlahBayar - selectedBooking.TotalPrice;
+
+            var result = AppServices.PaymentService.PayBooking(
+                selectedBooking.Id,
+                jumlahBayar
+            );
 
             if (result.Success)
             {
+                if (kembalian > 0)
+                {
+                    MessageBox.Show(
+                        $"Pembayaran berhasil!\n\n" +
+                        $"Total Tagihan : {FormatRupiah(selectedBooking.TotalPrice)}\n" +
+                        $"Jumlah Bayar : {FormatRupiah(jumlahBayar)}\n" +
+                        $"Kembalian : {FormatRupiah(kembalian)}",
+                        "Pembayaran Berhasil",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "Pembayaran berhasil!",
+                        "Pembayaran Berhasil",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                }
+
                 LoadPendingPayments();
                 ClearDetail();
+            }
+            else
+            {
+                MessageBox.Show(
+                    result.Message,
+                    "Gagal",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
 
