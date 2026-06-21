@@ -80,6 +80,9 @@ namespace GuiRentalFutsal
                 return;
             }
 
+            // Hitung kembalian jika pembayaran lebih
+            decimal kembalian = jumlahBayar - totalTagihan;
+
             StatusBookingTxt.Text = "Lunas";
 
             RiwayatPembayaranDgv.Rows.Add(
@@ -92,7 +95,22 @@ namespace GuiRentalFutsal
                 "Lunas"
             );
 
-            MessageBox.Show("Pembayaran berhasil!");
+            if (kembalian > 0)
+            {
+                MessageBox.Show(
+                    $"Pembayaran berhasil!\nKembalian: Rp {kembalian:N0}",
+                    "Informasi Pembayaran",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    "Pembayaran berhasil!",
+                    "Informasi Pembayaran",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
         }
 
         private void BatalPembayaranBtn_Click(object sender, EventArgs e)
